@@ -14,15 +14,27 @@
     <p class="mt-3">
         <a class="btn btn-primary" data-toggle="collapse" href="#collapsemsg" role="button" aria-expanded="false" aria-controls="collapsemsg">New message</a>
     </p>
-    <div class="collapse" id="collapsemsg">
+    <div class="collapse <#if message??>show</#if>" id="collapsemsg">
         <form method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="tag">Text tag</label>
-                <input class="form-control" type="text" name="tag" placeholder="tag" id="tag">
+                <input class="form-control ${(tagError??)?string('is-invalid', '')}" type="text"
+                       value="<#if message??>${message.tag}</#if>" name="tag" placeholder="tag" id="tag">
+                <#if textError??>
+                    <div class="invalid-feedback">
+                        ${tagError}
+                    </div>
+                </#if>
             </div>
             <div class="form-group">
                 <label for="Textarea1">Text message</label>
-                <textarea class="form-control" name="text" placeholder="Input text" id="Textarea1" rows="3"></textarea>
+                <textarea class="form-control ${(textError??)?string('is-invalid', '')}"
+                         value="<#if message??>${message.text}</#if>" name="text" placeholder="Input text" id="Textarea1" rows="3"></textarea>
+                <#if textError??>
+                    <div class="invalid-feedback">
+                        ${textError}
+                    </div>
+                </#if>
             </div>
             <div class="form-group">
                 <div class="custom-file">

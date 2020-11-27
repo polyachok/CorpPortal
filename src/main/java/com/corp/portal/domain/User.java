@@ -1,10 +1,11 @@
 package com.corp.portal.domain;
 
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import java.util.Collection;
 import java.util.Set;
 
@@ -12,12 +13,17 @@ import java.util.Set;
 @Table(name = "usr")
 public class User implements UserDetails {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy= GenerationType.SEQUENCE)
     private Long id;
+
+    @NotBlank(message = "Do not empty!")
     private String username;
+    @NotBlank(message = "Do not empty!")
     private String password;
     private boolean active;
 
+    @Email(message = "Email not correct")
+    @NotBlank(message = "Do not empty!")
     private String email;
     private String activationCode;
 

@@ -1,6 +1,9 @@
 package com.corp.portal.domain;
 
+import org.hibernate.validator.constraints.Length;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 public class Message {
@@ -8,7 +11,11 @@ public class Message {
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
 
+    @NotBlank(message = "Do not empty!")
+    @Length(max = 2048, message = "To long")
     private String text;
+    @NotBlank(message = "Do not empty!")
+    @Length(max = 255, message = "To long")
     private String tag;
 
     @ManyToOne(fetch = FetchType.EAGER)

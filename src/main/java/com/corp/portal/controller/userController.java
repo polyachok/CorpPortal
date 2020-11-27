@@ -47,6 +47,10 @@ public class userController {
 
     @GetMapping("/profile")
     public String getProfile(Model model, @AuthenticationPrincipal User user){
+        if (user.getActivationCode() != null){
+            model.addAttribute("message", "Email note activate!");
+        }
+
         model.addAttribute("username", user.getUsername());
         model.addAttribute("email", user.getEmail());
         return "profile";
