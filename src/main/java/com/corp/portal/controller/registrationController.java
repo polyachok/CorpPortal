@@ -30,12 +30,13 @@ public class registrationController {
 
         if (isActivated){
             model.addAttribute("message", "Activate success!");
+            model.addAttribute("messageType", "success");
         }else{
+            model.addAttribute("messageType", "danger");
             model.addAttribute("messages", "Activate not found!");
         }
         return "login";
     }
-
 
     @PostMapping("/registration")
     public String addUser(@Valid User user, BindingResult bindingResult, Model model){
