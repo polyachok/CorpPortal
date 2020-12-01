@@ -22,6 +22,16 @@ create table user_role (
     roles varchar(255)
 );
 
+create table departament (
+    id int8 not null,
+    name varchar(255)
+);
+
+create table position (
+    id int8 not null,
+    name varchar(255)
+);
+
 create table usr (
     id int8 not null,
     activation_code varchar(255),
@@ -29,6 +39,14 @@ create table usr (
     email varchar(255),
     password varchar(255) not null,
     username varchar(255) not null,
+    departament int8,
+    position int8,
+    status varchar(255),
+    firstName varchar(255),
+    surname varchar(255),
+    patronomic varchar(255),
+    mPhone varchar(255),
+    wPhone varchar(255),
     primary key (id)
 );
 
@@ -39,3 +57,14 @@ alter table if exists message
 alter table if exists user_role
     add constraint user_role_user_fk
     foreign key (user_id) references usr;
+
+create extension if not exists pgcrypto;
+
+insert into usr
+(id, activation_code, active, email, password, username, departament, position, status, firstName, surname, patronomic, mPhone, wPhone)
+values (1, null, true, 'upolyakov@sdp-mo.ru', crypt('123', gen_salt('bf' , 8)), 'admin', null, null, null, null, null, null, null, null);
+
+insert into user_role
+(user_id, roles)
+VALUES (1, 'ADMIN'), (1, 'USER');
+

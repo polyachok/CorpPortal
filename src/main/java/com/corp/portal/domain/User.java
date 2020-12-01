@@ -16,15 +16,37 @@ public class User implements UserDetails {
     @GeneratedValue(strategy= GenerationType.SEQUENCE)
     private Long id;
 
-    @NotBlank(message = "Do not empty!")
-    private String username;
-    @NotBlank(message = "Do not empty!")
+    @NotBlank(message = "")
+    private String firstName;
+
+    @NotBlank(message = "")
+    private String surname;
+
+    @NotBlank(message = "")
+    private String patronomic;
+
+    @NotBlank(message = "")
+    private String mPhone;
+
+    private String wPhone;
+
+    @NotBlank(message = "")
     private String password;
     private boolean active;
 
+    @NotBlank(message = "")
+    private String username;
+
     @Email(message = "Email not correct")
-    @NotBlank(message = "Do not empty!")
+    @NotBlank(message = "")
     private String email;
+
+    private Long departament;
+
+    private Long position;
+
+    private String status;
+
     private String activationCode;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
@@ -69,16 +91,17 @@ public class User implements UserDetails {
         this.id = id;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
     public String getUsername() {
         return username;
     }
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public void setPassword(String password) {
@@ -115,5 +138,69 @@ public class User implements UserDetails {
 
     public void setActivationCode(String activationCode) {
         this.activationCode = activationCode;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public String getPatronomic() {
+        return patronomic;
+    }
+
+    public void setPatronomic(String patronomic) {
+        this.patronomic = patronomic;
+    }
+
+    public String getmPhone() {
+        return mPhone;
+    }
+
+    public void setmPhone(String mPhone) {
+        this.mPhone = mPhone;
+    }
+
+    public String getwPhone() {
+        return wPhone;
+    }
+
+    public void setwPhone(String wPhone) {
+        this.wPhone = wPhone;
+    }
+
+    public Long getDepartament() {
+        return departament;
+    }
+
+    public void setDepartament(Long departament) {
+        this.departament = departament;
+    }
+
+    public Long getPosition() {
+        return position;
+    }
+
+    public void setPosition(Long position) {
+        this.position = position;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

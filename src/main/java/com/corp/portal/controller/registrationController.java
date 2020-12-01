@@ -40,15 +40,20 @@ public class registrationController {
 
     @PostMapping("/registration")
     public String addUser(@Valid User user, BindingResult bindingResult, Model model){
+        System.out.println(user.getPassword() + "pass");
         if (bindingResult.hasErrors()){
             Map<String, String> errors = UtilsController.getErrors(bindingResult);
             model.mergeAttributes(errors);
+            System.out.println(errors);
             return "registration";
         }
         if (!userService.addUser(user)){
             model.addAttribute("usernameError", "User exist!");
+            System.out.println("2");
+
             return "registration";
         }
+
         return "redirect:/login";
     }
 
