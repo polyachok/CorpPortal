@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="static/css/adminlte.min.css">
+    <link rel="stylesheet" href="static/css/tree.min.css">
 
 </head>
 <body  class="hold-transition sidebar-mini layout-fixed">
@@ -37,6 +38,9 @@
     <script src="static/js/bootstrap.bundle.min.js"></script>
     <!-- AdminLTE App -->
     <script src="static/js/adminlte.min.js"></script>
+    <script src="static/js/jstree.min.js"></script>
+    <script src="static/js/jquery.treetable.js"></script>
+    <script src="static/js/ui-treeview.js"></script>
 
 </body>
 </html>
