@@ -46,7 +46,11 @@
 
 <#macro logout>
     <form action="/logout" method="post">
-        <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Log Out</button>
+            <button class="btn btn-defaul" type="submit">
+                <span style="font-size: 20px; color: white;">
+                 <i class="fas fa-sign-out-alt"></i>
+                </span>
+            </button>
         <input type="hidden" name="_csrf" value="${_csrf.token}" />
     </form>
 </#macro>

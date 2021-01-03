@@ -44,7 +44,7 @@ public class userController {
         userService.saveUser(user, userName, form);
         return "redirect:/user";
     }
-
+    //TODO доделать профайл
     @GetMapping("/profile")
     public String getProfile(Model model, @AuthenticationPrincipal User user){
         if (user.getActivationCode() != null){

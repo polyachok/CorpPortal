@@ -17,7 +17,7 @@ public class User implements UserDetails {
     private Long id;
 
     @NotBlank(message = "")
-    private String firstName;
+    private String firstname;
 
     @NotBlank(message = "")
     private String surname;
@@ -26,9 +26,9 @@ public class User implements UserDetails {
     private String patronomic;
 
     @NotBlank(message = "")
-    private String mPhone;
+    private String mphone;
 
-    private String wPhone;
+    private String wphone;
 
     @NotBlank(message = "")
     private String password;
@@ -48,7 +48,7 @@ public class User implements UserDetails {
     private String status;
 
     private String activationCode;
-
+//TODO add user avatar
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
@@ -141,11 +141,11 @@ public class User implements UserDetails {
     }
 
     public String getFirstName() {
-        return firstName;
+        return firstname;
     }
 
     public void setFirstName(String firstName) {
-        this.firstName = firstName;
+        this.firstname = firstName;
     }
 
     public String getSurname() {
@@ -165,19 +165,19 @@ public class User implements UserDetails {
     }
 
     public String getmPhone() {
-        return mPhone;
+        return mphone;
     }
 
     public void setmPhone(String mPhone) {
-        this.mPhone = mPhone;
+        this.mphone = mPhone;
     }
 
     public String getwPhone() {
-        return wPhone;
+        return wphone;
     }
 
     public void setwPhone(String wPhone) {
-        this.wPhone = wPhone;
+        this.wphone = wPhone;
     }
 
     public Long getDepartament() {

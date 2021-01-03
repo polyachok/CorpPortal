@@ -80,7 +80,7 @@ ${message?if_exists}
                     </div>
                 </div>
                 <div class="input-group mb-3">
-                    <input type="password" name="password" class="form-control ${(emailError??)?string('is-invalid', '')}" placeholder="Password">
+                    <input type="password" name="password" class="form-control ${(passwordError??)?string('is-invalid', '')}" placeholder="Password">
                     <div class="input-group-append">
                         <div class="input-group-text">
                             <span class="fas fa-lock"></span>

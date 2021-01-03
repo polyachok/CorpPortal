@@ -42,12 +42,37 @@ create table usr (
     departament int8,
     position int8,
     status varchar(255),
-    firstName varchar(255),
+    firstname varchar(255),
     surname varchar(255),
     patronomic varchar(255),
-    mPhone varchar(255),
-    wPhone varchar(255),
+    mphone varchar(255),
+    wphone varchar(255),
     primary key (id)
+);
+
+create table project (
+     id int8 not null,
+     name varchar(255) not null,
+     dateCreate date,
+     dateClose date,
+     description varchar(255),
+     author int8 not null,
+     /*manager int8 not null,*/
+     /*team int8[],*/
+     parent int8,
+     primary key (id)
+);
+
+create table task (
+     id int8 not null,
+     name varchar(255) not null,
+     dateCreate date,
+     dateClose date,
+     description varchar(255),
+     author int8 not null,
+     manager int8 not null,
+     parent int8,
+     primary key (id)
 );
 
 alter table if exists message
@@ -61,7 +86,7 @@ alter table if exists user_role
 create extension if not exists pgcrypto;
 
 insert into usr
-(id, activation_code, active, email, password, username, departament, position, status, firstName, surname, patronomic, mPhone, wPhone)
+(id, activation_code, active, email, password, username, departament, position, status, firstname, surname, patronomic, mphone, wphone)
 values (1, null, true, 'upolyakov@sdp-mo.ru', crypt('123', gen_salt('bf' , 8)), 'admin', null, null, null, null, null, null, null, null);
 
 insert into user_role

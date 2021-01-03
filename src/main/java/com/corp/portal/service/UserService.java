@@ -96,7 +96,7 @@ public class UserService implements UserDetailsService {
         }
         userRepo.save(user);
     }
-
+//todo добавить редактирование всех полей
     public void updateProfile(User user, String password, String email) {
         String userEmail = user.getEmail();
         boolean isEmailChange = (email != null && !email.equals(userEmail));

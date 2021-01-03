@@ -44,7 +44,7 @@ ${message?if_exists}
                         <div class="card">
                             <div class="card-header p-2">
                                 <ul class="nav nav-pills">
-                                    <li class="nav-item"><a class="nav-link" href="#settings" data-toggle="tab">Settings</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="#settings" data-toggle="tab">Настройки пользователя</a></li>
                                 </ul>
                             </div><!-- /.card-header -->
                             <div class="card-body">
@@ -121,27 +121,27 @@ ${message?if_exists}
                             <div class="card-body box-profile">
                                 <div class="text-center">
                                     <img class="profile-user-img img-fluid img-circle"
-                                         src="../../dist/img/user4-128x128.jpg"
+                                         src="../static/img/avatar.jpg"
                                          alt="User profile picture">
                                 </div>
 
-                                <h3 class="profile-username text-center">Nina Mcintire</h3>
+                                <h3 class="profile-username text-center">${user.firstName} ${user.surname}</h3>
 
-                                <p class="text-muted text-center">Software Engineer</p>
+                                <#if user.position??><p class="text-muted text-center">${user.position}</p></#if>
 
                                 <ul class="list-group list-group-unbordered mb-3">
                                     <li class="list-group-item">
-                                        <b>Followers</b> <a class="float-right">1,322</a>
+                                        <b>Проекты</b> <a class="float-right">1,322</a>
                                     </li>
                                     <li class="list-group-item">
-                                        <b>Following</b> <a class="float-right">543</a>
+                                        <b>Задачи</b> <a class="float-right">543</a>
                                     </li>
-                                    <li class="list-group-item">
+                                   <!-- <li class="list-group-item">
                                         <b>Friends</b> <a class="float-right">13,287</a>
-                                    </li>
+                                    </li>-->
                                 </ul>
 
-                                <a href="#" class="btn btn-primary btn-block"><b>Follow</b></a>
+                                <!--<a href="#" class="btn btn-primary btn-block"><b>Follow</b></a>-->
                             </div>
                             <!-- /.card-body -->
                         </div>
