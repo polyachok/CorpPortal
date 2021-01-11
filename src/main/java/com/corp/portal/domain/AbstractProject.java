@@ -10,12 +10,12 @@ public abstract class AbstractProject {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
-    @NotBlank
+    //@NotBlank
     private String name;
 
     private Date dateCreate;
     private String dateClose;
-    @NotBlank
+   // @NotBlank
     private String description;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
