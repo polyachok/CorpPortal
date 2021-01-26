@@ -1,9 +1,10 @@
 package com.corp.portal.domain;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @MappedSuperclass
 public abstract class AbstractProject {
@@ -13,19 +14,51 @@ public abstract class AbstractProject {
     //@NotBlank
     private String name;
 
-    private Date dateCreate;
-    private String dateClose;
+    private String datecreate;
+    private String dateclose;
    // @NotBlank
     private String description;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "parent")
+    private Project parent;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "author")
     private User author;
-   /* @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
-    private User manager;*/
-    //private List team;
-    private Long parent;
+    /* @ManyToOne(fetch = FetchType.EAGER)
+        @JoinColumn(name = "user_id")
+        private User manager;*/
+    @ManyToMany
+    @JoinTable(
+            name = "project_team",
+            joinColumns = { @JoinColumn (name = "project")},
+            inverseJoinColumns = { @JoinColumn (name= "team")}
+    )
+    private Set<User> team = new HashSet<>();
+    @ManyToMany
+    @JoinTable(
+            name = "project_comment",
+            joinColumns = { @JoinColumn (name = "project")},
+            inverseJoinColumns = { @JoinColumn (name= "comment")}
+    )
+    private List<PComment> comment = new ArrayList<>();
+
     private String status;
+
+    public Project getParent() {
+        return parent;
+    }
+
+    public List<PComment> getComment() {
+        return comment;
+    }
+
+    public void setComment(List<PComment> comment) {
+        this.comment = comment;
+    }
+
+    public void setParent(Project parent) {
+        this.parent = parent;
+    }
 
     public Long getId() {
         return id;
@@ -43,20 +76,20 @@ public abstract class AbstractProject {
         this.name = name;
     }
 
-    public Date getDateCreate() {
-        return dateCreate;
+    public String getDatecreate() {
+        return datecreate;
     }
 
-    public void setDateCreate(Date dateCreate) {
-        this.dateCreate = dateCreate;
+    public void setDatecreate(String datecreate) {
+        this.datecreate = datecreate;
     }
 
-    public String getDateClose() {
-        return dateClose;
+    public String getDateclose() {
+        return dateclose;
     }
 
-    public void setDateClose(String dateClose) {
-        this.dateClose = dateClose;
+    public void setDateclose(String dateclose) {
+        this.dateclose = dateclose;
     }
 
     public String getDescription() {
@@ -91,13 +124,7 @@ public abstract class AbstractProject {
         this.team = team;
     }*/
 
-    public Long getParent() {
-        return parent;
-    }
 
-    public void setParent(Long parent) {
-        this.parent = parent;
-    }
 
     public String getStatus() {
         return status;
@@ -105,5 +132,13 @@ public abstract class AbstractProject {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Set<User> getTeam() {
+        return team;
+    }
+
+    public void setTeam(Set<User> team) {
+        this.team = team;
     }
 }

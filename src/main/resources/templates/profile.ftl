@@ -28,10 +28,7 @@ ${message?if_exists}
                         <h1>Profile</h1>
                     </div>
                     <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">User Profile</li>
-                        </ol>
+
                     </div>
                 </div>
             </div><!-- /.container-fluid -->
@@ -42,63 +39,58 @@ ${message?if_exists}
                 <div class="row">
                     <div class="col-md-9">
                         <div class="card">
-                            <div class="card-header p-2">
-                                <ul class="nav nav-pills">
-                                    <li class="nav-item"><a class="nav-link" href="#settings" data-toggle="tab">Настройки пользователя</a></li>
-                                </ul>
-                            </div><!-- /.card-header -->
                             <div class="card-body">
-                                <div class="tab-content">
-                                    <div class="tab-pane" id="settings">
-                                        <form class="form-horizontal" method="post">
+
+                                        <form class="form-horizontal" method="post" action="/user/profile">
                                             <input type="hidden" name="_csrf" value="${_csrf.token}" />
+                                            <input type="hidden" name="userId" value="${usr.id}" />
                                             <div class="form-group row">
                                                 <label for="inputName" class="col-sm-2 col-form-label">Имя пользователя</label>
                                                 <div class="col-sm-10">
                                                     <input type="text" name="username" id="inputName" class="form-control ${(usernameError??)?string('is-invalid', '')}"
-                                                           value="${user.username}" placeholder="Имя пользователя для входа">
+                                                           value="${usr.username}" placeholder="Имя пользователя для входа">
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label for="inputFirstName" class="col-sm-2 col-form-label">Имя</label>
                                                 <div class="col-sm-10">
                                                     <input type="text" name="firstName" if="inputFirstName" class="form-control ${(firstNameError??)?string('is-invalid', '')}"
-                                                           value="${user.firstName}" placeholder="Имя">
+                                                           value="${usr.firstName}" placeholder="Имя">
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label for="inputSurname" class="col-sm-2 col-form-label">Фамилия</label>
                                                 <div class="col-sm-10">
                                                     <input type="text" name="surname" id="inputSurname" class="form-control ${(surnameError??)?string('is-invalid', '')}"
-                                                           value="${user.surname}" placeholder="Фамилия">
+                                                           value="${usr.surname}" placeholder="Фамилия">
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label for="inputPatronomic" class="col-sm-2 col-form-label">Отчество</label>
                                                 <div class="col-sm-10">
-                                                    <input type="text" name="patronomic" id="inputPatronomic" class="form-control ${(patronomicError??)?string('is-invalid', '')}"
-                                                           value="${user.patronomic}" placeholder="Отчество">
+                                                    <input type="text" name="patronomic" id="inputPatronomic" class="form-control <#if usr.patronomic ??>${(patronomicError??)?string('is-invalid', '')} </#if>"
+                                                           value="<#if usr.patronomic ??>${usr.patronomic}</#if>" placeholder="Отчество">
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
                                                 <div class="col-sm-10">
                                                     <input type="email" name="email" id="inputEmail" class="form-control ${(emailError??)?string('is-invalid', '')}"
-                                                           value="${user.email}" placeholder="Email">
+                                                           value="${usr.email}" placeholder="Email">
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label for="inputmPhone" class="col-sm-2 col-form-label">Моб. телефон</label>
                                                 <div class="col-sm-10">
-                                                    <input type="text" name="mPhone" id="inputmPhone" class="form-control ${(mPhoneError??)?string('is-invalid', '')}"
-                                                           value="${user.mPhone}" placeholder="Мобильный телефон">
+                                                    <input type="text" name="mPhone" id="inputmPhone" class="form-control ${(mphoneError??)?string('is-invalid', '')}"
+                                                           value="<#if usr.mPhone ??>${usr.mPhone}</#if>" placeholder="Мобильный телефон">
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <label for="inputPass" class="col-sm-2 col-form-label">Пароль</label>
                                                 <div class="col-sm-10">
                                                     <input type="password" name="password" id="inputPass" class="form-control ${(passwordError??)?string('is-invalid', '')}"
-                                                           placeholder="Password">
+                                                         value="${usr.password}"  placeholder="Password">
                                                 </div>
                                             </div>
                                             <div class="form-group row">
@@ -107,9 +99,8 @@ ${message?if_exists}
                                                 </div>
                                             </div>
                                         </form>
-                                    </div>
+
                                     <!-- /.tab-pane -->
-                                </div>
                                 <!-- /.tab-content -->
                             </div><!-- /.card-body -->
                         </div>
@@ -125,9 +116,9 @@ ${message?if_exists}
                                          alt="User profile picture">
                                 </div>
 
-                                <h3 class="profile-username text-center">${user.firstName} ${user.surname}</h3>
+                                <h3 class="profile-username text-center">${usr.surname} ${usr.firstName} </h3>
 
-                                <#if user.position??><p class="text-muted text-center">${user.position}</p></#if>
+                                <#if user.position??><p class="text-muted text-center">${usr.position}</p></#if>
 
                                 <ul class="list-group list-group-unbordered mb-3">
                                     <li class="list-group-item">

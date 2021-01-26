@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -79,26 +78,18 @@ public class UserService implements UserDetailsService {
     public List findAll() {
         return userRepo.findAll();
     }
+    public User findById(Long user_id){
+        return userRepo.findById(user_id).get();
+    }
+    public void saveUser(User user){
 
-    public void saveUser(User user, String userName, Map<String, String> form){
-        user.setUsername(userName);
 
-        Set<String> roles = Arrays.stream(Role.values())
-                .map(Role::name)
-                .collect(Collectors.toSet());
 
-        user.getRoles().clear();
-
-        for (String key :form.keySet()){
-            if (roles.contains(key)){
-                user.getRoles().add(Role.valueOf(key));
-            }
-        }
         userRepo.save(user);
     }
-//todo добавить редактирование всех полей
-    public void updateProfile(User user, String password, String email) {
-        String userEmail = user.getEmail();
+    //todo добавить редактирование всех полей
+    public Boolean updateProfile( User user, Map<String, String> form) {
+        /*String userEmail = user.getEmail();
         boolean isEmailChange = (email != null && !email.equals(userEmail));
 
         if (isEmailChange){
@@ -106,7 +97,19 @@ public class UserService implements UserDetailsService {
         }
         if (!StringUtils.isEmpty(password)){
             user.setPassword(password);
-        }
-        userRepo.save(user);
+        }*/
+
+        user.setId(Long.parseLong(form.get("userId")));
+        User usr = userRepo.findById(user.getId()).get();
+        usr.setUsername(form.get("username"));
+        usr.setFirstName(form.get("firstName"));
+        usr.setSurname(form.get("surname"));
+        usr.setPatronomic(form.get("patronomic"));
+        usr.setEmail(form.get("email"));
+        usr.setmPhone(form.get("mPhone"));
+
+        userRepo.saveAndFlush(usr);
+        return true;
     }
+
 }

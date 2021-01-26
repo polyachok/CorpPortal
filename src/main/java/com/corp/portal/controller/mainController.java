@@ -29,7 +29,7 @@ public class mainController {
     @Autowired
     private ConfigRepo configRepo;
 
-   // String uploadPath = configRepo.findByParamName("uploadPath").getParam();
+   // String uploadPath = configRepo.findbyparamname("uploadPath").getParam();
 
     @GetMapping("/")
     public String greeting(Map<String, Object> model) {
@@ -64,14 +64,14 @@ public class mainController {
                 model.addAttribute("message", message);
             }else {
                 if (file != null && !file.getOriginalFilename().isEmpty()) {
-                    File uploadDir = new File(configRepo.findByParamName("uploadPath").getParam());
+                    File uploadDir = new File(configRepo.findByParamname("uploadPath").getParam());
                     if (!uploadDir.exists()) {
                         uploadDir.mkdir();
                     }
                     String uuidFile = UUID.randomUUID().toString();
                     String fileName = uuidFile + "." + file.getOriginalFilename();
 
-                    file.transferTo(new File(configRepo.findByParamName("uploadPath").getParam() + "/" + fileName));
+                    file.transferTo(new File(configRepo.findByParamname("uploadPath").getParam() + "/" + fileName));
 
                     message.setFilename(fileName);
                 }

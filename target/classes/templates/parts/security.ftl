@@ -9,6 +9,7 @@
       firstname = user.getFirstName()
       surname = user.getSurname()
       isAdmin = user.isAdmin()
+      user_id = user.getId()
   >
 <#else>
     <#assign

@@ -1,140 +1,63 @@
 <#import "parts/common.ftl" as c>
-
+<#import "parts/login.ftl" as l>
 <@c.page>
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal-lg">
-                        Новый проект
-                    </button>
-                </div>
-                <!-- ./card-header -->
-                <div class="card-body p-0">
-                    <table class="table table-hover">
-                        <thead>
-                        <th>Название</th>
-                        <th>Дата начала</th>
-                        <th>Ответственный</th>
-                        <th>Статус</th>
-                        </thead>
-                        <tbody>
-                        <#list projects as project>
-                        <tr>
-                            <td class="border-0">${project.name}</td>
-                            <td >${project.dateCreate}</td>
-                            <td >${project.author.username}</td>
-                            <td >${project.status}</td>
-                        </tr>
-                        <tr data-widget="expandable-table" aria-expanded="true">
-                            <td>
-                                <i class="fas fa-caret-right fa-fw"></i>
-                                219
-                            </td>
-                        </tr>
-                        <tr class="expandable-body">
-                            <td>
-                                <div class="p-0">
-                                    <table class="table table-hover">
-                                        <tbody>
-                                        <tr data-widget="expandable-table" aria-expanded="false">
-                                            <td>
-                                                <i class="fas fa-caret-right fa-fw"></i>
-                                                219-1
-                                            </td>
-                                        </tr>
-                                        <tr class="expandable-body">
-                                            <td>
-                                                <div class="p-0">
-                                                    <table class="table table-hover">
-                                                        <tbody>
-                                                        <tr>
-                                                            <td>219-1-1</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>219-1-2</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>219-1-3</td>
-                                                        </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>219-2</td>
-                                        </tr>
-                                        <tr>
-                                            <td>219-3</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </td>
-                        </tr>
-                        </#list>
-                        </tbody>
-                    </table>
-                </div>
-                <!-- /.card-body -->
-            </div>
-            <!-- /.card -->
-        </div>
-    </div>
-    <!-- /.row -->
-    </div><!-- /.container-fluid -->
-    </section>
-    <!-- /.content -->
-    </div>
-    <div class="modal fade" id="modal-lg">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <form action="/project" method="post">
-                <div class="modal-header">
-                    <h4 class="modal-title">Новый проект</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                        <div class="card-body">
-                            <div class="form-group">
-                                <label for="exampleInputName">Название проекта</label>
-                                <input type="text" name="name" class="form-control" id="exampleInputName" placeholder="Название">
-                            </div>
-                            <div class="form-group">
-                                <label for="exampleInputName">Описание</label>
-                                <textarea name="description" class="form-control" row="3" placeholder="Описание"></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label>Вложен в ...</label>
-                                <select name="parent" class="form-control">
-                                    <option value="0">-</option>
-                                    <option value="1">option 2</option>
-                                    <option value="2">option 3</option>
-                                    <option value="3">option 4</option>
-                                    <option value="4">option 5</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Статус</label>
-                                <select name="status" class="form-control">
-                                    <option >Активный</option>
-                                    <option >Архивный</option>
-                                </select>
-                            </div>
-                            <input type="hidden" name="_csrf" value="${_csrf.token}" />
-                        </div>
 
+    <link rel="stylesheet" type="text/css" href="../static/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.23/b-1.6.5/b-colvis-1.6.5/b-print-1.6.5/fh-3.1.7/r-2.2.7/sc-2.0.3/sb-1.0.1/sp-1.2.2/datatables.min.css"/>
+
+    <section class="content">
+
+        <div class="container-fluid" style="padding-top: 15px;">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <a class="btn btn-app" style="height: 40px; min-width: 40px; padding: 10px 5px; margin: 0px 0px 0px 8px;" href="/project/add">
+                                <i class="fas fa-plus"></i>
+                            </a>
+                        </div>
+                            <div class="card-body">
+                                <table id="project-table" class="table table-sm table-hover table-borderless">
+                                    <thead>
+                                    <tr style="font: status-bar;">
+                                        <th>Название</th>
+                                        <th>Дата начала</th>
+                                        <th>Ответственный</th>
+                                        <th>Статус</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <#list projects as project>
+                                        <tr>
+                                            <td><a href="/project/${project.id}"><b>${project.name}</b></a></td>
+                                            <td>${project.datecreate}</td>
+                                            <td>${project.author.firstName} ${project.author.surname}</td>
+                                            <td>${project.status}</td>
+
+                                        </tr>
+                                    </#list>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                    </div>
                 </div>
-                <div class="modal-footer justify-content-between">
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </div>
-                </form>
             </div>
-            <!-- /.modal-content -->
         </div>
-        <!-- /.modal-dialog -->
-    </div>
+    </section>
 </@c.page>
+<script type="text/javascript" src="../static/js/datatables.min.js"></script>
+<script>
+    $(document).ready( function () {
+        $('#project-table').DataTable({
+            "language": {
+                "lengthMenu": "Показать _MENU_ записей на странице",
+                "zeroRecords": "Записей не обнаружено",
+                "info": "Показать _PAGE_ из _PAGES_",
+                "infoEmpty": "Записей не обнаружено",
+                "infoFiltered": "(выбранно _MAX_ записей)",
+                "search": "Поиск:"
+            }
+        });
+    } );
+</script>

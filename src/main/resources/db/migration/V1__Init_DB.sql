@@ -2,9 +2,9 @@ create sequence hibernate_sequence start 1 increment 1;
 
 create table config (
     id int8 not null,
-    config_name varchar(255),
+    configname varchar(255),
     param varchar(255),
-    param_name varchar(255),
+    paramname varchar(255),
     primary key (id)
 );
 
@@ -47,32 +47,27 @@ create table usr (
     patronomic varchar(255),
     mphone varchar(255),
     wphone varchar(255),
+    avatar VARCHAR (255),
     primary key (id)
 );
 
 create table project (
      id int8 not null,
      name varchar(255) not null,
-     dateCreate date,
-     dateClose date,
+     datecreate varchar(255),
+     dateclose varchar(255),
      description varchar(255),
      author int8 not null,
-     /*manager int8 not null,*/
-     /*team int8[],*/
+     status varchar(255),
      parent int8,
      primary key (id)
 );
 
-create table task (
-     id int8 not null,
-     name varchar(255) not null,
-     dateCreate date,
-     dateClose date,
-     description varchar(255),
-     author int8 not null,
-     manager int8 not null,
-     parent int8,
-     primary key (id)
+create table project_team
+(
+    project int8 not null ,
+    team    int8 not null ,
+    primary key (project, team)
 );
 
 alter table if exists message
@@ -85,11 +80,4 @@ alter table if exists user_role
 
 create extension if not exists pgcrypto;
 
-insert into usr
-(id, activation_code, active, email, password, username, departament, position, status, firstname, surname, patronomic, mphone, wphone)
-values (1, null, true, 'upolyakov@sdp-mo.ru', crypt('123', gen_salt('bf' , 8)), 'admin', null, null, null, null, null, null, null, null);
-
-insert into user_role
-(user_id, roles)
-VALUES (1, 'ADMIN'), (1, 'USER');
 

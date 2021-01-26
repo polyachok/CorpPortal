@@ -14,7 +14,7 @@
                 <img src="dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
             </div>-->
             <div class="image">
-                <img src="../static/img/avatarIcon.png" class="img-circle elevation-2" alt="User Image">
+                <img src="../static/img/avatar.jpg" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
                 <#if user??>

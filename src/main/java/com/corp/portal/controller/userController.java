@@ -8,9 +8,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/user")
@@ -27,6 +30,32 @@ public class userController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/add")
+    public String userAdd(){
+        return "userAdd";
+    }
+
+    @PostMapping("/add")
+    public String create(
+            @Valid User user,
+            BindingResult bindingResult,
+            @RequestParam Map<String, String> form,
+            Model model
+    ){
+        if (bindingResult.hasErrors()){
+            Map<String, String> errors = UtilsController.getErrors(bindingResult);
+            model.mergeAttributes(errors);
+            System.out.println(errors);
+            return "userAdd";
+        }
+        if (userService.addUser(user)) {
+            model.addAttribute("usr", user);
+            return "redirect:/user";
+        }
+        return "userAdd";
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("{user}")
     public String userEditForm(@PathVariable User user, Model model){
         model.addAttribute("user", user);
@@ -34,36 +63,36 @@ public class userController {
         return "userEdit";
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @PostMapping
-    public String userSave(
-            @RequestParam String userName,
-            @RequestParam Map<String, String> form,
-            @RequestParam("userId") User user
-    ){
-        userService.saveUser(user, userName, form);
-        return "redirect:/user";
-    }
+
     //TODO доделать профайл
     @GetMapping("/profile")
     public String getProfile(Model model, @AuthenticationPrincipal User user){
         if (user.getActivationCode() != null){
             model.addAttribute("message", "Email note activate!");
         }
+        model.addAttribute("usr", userService.findById(user.getId()));
 
-        model.addAttribute("username", user.getUsername());
-        model.addAttribute("email", user.getEmail());
         return "profile";
     }
 
     @PostMapping("profile")
     public String updateProfile(
-            @AuthenticationPrincipal User user,
-            @RequestParam String password,
-            @RequestParam String email
+            @Valid User user,
+            BindingResult bindingResult,
+            @RequestParam Map<String, String> form,
+            Model model
     ){
-        userService.updateProfile(user,password,email);
-
-        return "redirect:/user/profile";
+        if (bindingResult.hasErrors()){
+            Map<String, String> errors = UtilsController.getErrors(bindingResult);
+            model.mergeAttributes(errors);
+            System.out.println(errors);
+            return "profile";
+        }
+        if (userService.updateProfile(user,form)) {
+            model.addAttribute("usr", user);
+            return "redirect:/user/profile";
+        }
+        return "profile";
     }
+
 }

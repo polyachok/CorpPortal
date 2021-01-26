@@ -4,7 +4,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.util.HashMap;
 
 @Entity
 public class Config {
@@ -12,17 +11,17 @@ public class Config {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
 
-    private String configName;
+    private String configname;
 
-    private String paramName;
+    private String paramname;
 
     private String param;
 
     public Config() {
     }
 
-    public Config(String configName) {
-        this.configName = configName;
+    public Config(String configname) {
+        this.configname = configname;
     }
 
     public Long getId() {
@@ -33,12 +32,12 @@ public class Config {
         this.id = id;
     }
 
-    public String getParamName() {
-        return paramName;
+    public String getParamname() {
+        return paramname;
     }
 
-    public void setParamName(String paramName) {
-        this.paramName = paramName;
+    public void setParamname(String paramname) {
+        this.paramname = paramname;
     }
 
     public String getParam() {
@@ -49,11 +48,11 @@ public class Config {
         this.param = param;
     }
 
-    public String getConfigName() {
-        return configName;
+    public String getConfigname() {
+        return configname;
     }
 
-    public void setConfigName(String configName) {
-        this.configName = configName;
+    public void setConfigname(String configname) {
+        this.configname = configname;
     }
 }
