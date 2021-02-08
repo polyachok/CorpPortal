@@ -21,8 +21,7 @@ public class ProjectService {
     private PrCoFileRepo fileRepo;
 
     public boolean addProject(Project project, User user){
-        Project projectFromDb = projectRepo.findById(project.getId()).get();
-        if (projectFromDb != null){
+        if (project.getId() != null){
             return false;
         }
        // String dateCreate = new Date().toString();
@@ -36,6 +35,15 @@ public class ProjectService {
         return (List) projectRepo.findAll();
     }
 
+    public List findByAuthorOrTeam(User user){
+        User author = user;
+        List<Project> projectListByTeam = projectRepo.findByTeam(user);
+        List<Project> projectList = projectRepo.findByAuthor(user);
+        projectList.addAll(projectListByTeam);
+        System.out.println("ProjectService.findByAuthorOrTeam");
+        return projectList;
+    }
+
     public Project findById(Long project_id){
         Project project = projectRepo.findById(project_id).get();
         return  project;
@@ -46,7 +54,7 @@ public class ProjectService {
 
 
     public List<Project> getByParent(Project project) {
-         List<Project> projectList = projectRepo.findAllByParent(project);
+         List<Project> projectList = projectRepo.findAllByParent(project.getId());
         return projectList;
     }
 

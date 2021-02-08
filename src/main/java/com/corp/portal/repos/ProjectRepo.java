@@ -10,5 +10,6 @@ import java.util.List;
 public interface ProjectRepo extends CrudRepository<Project, Long> {
     Project findByName(String name);
     List findByAuthor(User author);
-    List findAllByParent(Project id);
+    List findAllByParent(Long id);
+    List findByTeam(User team);
 }

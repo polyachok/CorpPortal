@@ -12,7 +12,12 @@
         <div class="container-fluid" style="padding-top: 15px;">
             <div class="row">
                 <div class="col-12">
-                    <table id="user-table" class="table table-sm table-hover table-borderless">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Пользователи</h4>
+                        </div>
+                        <div class="card-body">
+                          <table id="user-table" class="table table-sm table-hover table-borderless">
                         <thead>
                         <tr>
                             <th>ФИО</th>
@@ -45,6 +50,8 @@
                         </tr>
                         </tfoot>
                     </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

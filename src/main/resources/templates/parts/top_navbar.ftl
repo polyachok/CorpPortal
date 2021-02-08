@@ -9,7 +9,7 @@
             <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Создать</a>
             <div class="dropdown-menu" style="margin-left: 2%;">
                 <a class="dropdown-item" href="/project/add"">Проект</a>
-                <a class="dropdown-item" href="#">Задачу</a>
+                <a class="dropdown-item" href="/task/add">Задачу</a>
             </div>
         </li>
 

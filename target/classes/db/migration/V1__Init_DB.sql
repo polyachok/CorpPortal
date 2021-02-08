@@ -56,7 +56,7 @@ create table project (
      name varchar(255) not null,
      datecreate varchar(255),
      dateclose varchar(255),
-     description varchar(255),
+     description text,
      author int8 not null,
      status varchar(255),
      parent int8,
@@ -80,4 +80,95 @@ alter table if exists user_role
 
 create extension if not exists pgcrypto;
 
+create table pcomment (
+                          id int8 not null,
+                          datecreate varchar(255),
+                          description text,
+                          author int8 not null,
+                          parent int8,
+                          primary key (id)
+);
 
+
+create table project_comment
+(
+    project int8 not null ,
+    comment int8 not null ,
+    primary key (comment, project)
+);
+
+create table pr_co_file
+(
+    id int8 not null,
+    name varchar(2048),
+    datecreate varchar(255),
+    author int8,
+    path varchar(2048),
+    parent int8,
+    primary key (id)
+);
+
+
+create table pcomment_file
+(
+    comment int8 not null ,
+    file    int8 not null ,
+    primary key (comment, file)
+);
+
+create table task
+(
+    id          int8         not null,
+    name        varchar(255) not null,
+    datecreate  varchar(255),
+    dateclose   varchar(255),
+    deadline    varchar(255),
+    dead_line_status boolean default true,
+    description text,
+    author      int8         not null,
+    responsible int8         not null,
+    status      varchar(255),
+    parentP      int8,
+    parentT      int8,
+    primary key (id)
+
+);
+
+create table task_team
+(
+    task int8 not null ,
+    team    int8 not null ,
+    primary key (task, team)
+);
+
+create table tcomment (
+                          id int8 not null,
+                          datecreate varchar(255),
+                          description text,
+                          author int8 not null,
+                          parent int8,
+                          primary key (id)
+);
+
+create table task_comment (
+                              task int8 not null ,
+                              comment    int8 not null ,
+                              primary key (comment, task)
+);
+
+
+create table ta_co_file (
+                            id int8 not null,
+                            name varchar(2048),
+                            datecreate varchar(255),
+                            author int8,
+                            path varchar(2048),
+                            parent int8,
+                            primary key (id)
+);
+
+create table t_comment_file (
+                                comment int8 not null ,
+                                file    int8 not null ,
+                                primary key (comment, file)
+);

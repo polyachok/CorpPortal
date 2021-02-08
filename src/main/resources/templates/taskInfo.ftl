@@ -16,37 +16,37 @@
 </head>
 <body  class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
-
     <#include "parts/top_navbar.ftl">
     <#include "parts/navbar.ftl">
     <div class="content-wrapper">
         <section class="content">
             <div class="container-fluid" style="padding-top: 15px;">
             <!-- Default box -->
-            <div class="row">
-                <div class="col-md-9">
-                        <div class="card card-primary card-outline">
+                <div class="row">
+                    <div class="col-md-9">
+                        <div class="card card-success card-outline">
                             <div class="card-body box-profile">
                                     <div class="post">
-                                        <h4><strong>${project.name}</strong></h4>
+                                        <h4><strong>${task.name}</strong></h4>
                                     </div>
+
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="row">
                                             <div class="col-12 col-sm-12">
-                                                <p>${project.description}</p>
+                                                <p>${task.description}</p>
                                             </div>
                                         </div>
                                         <hr />
                                         <div class="row">
                                             <div class="col-12">
-                                                <#if childProject ??>
+                                                <#if childTask ??>
                                                 <div id="accordion">
-                                                    <div class="card card-primary card-outline">
+                                                    <div class="card card-success card-outline">
                                                         <a class="d-block w-100 collapsed" data-toggle="collapse" href="#collapseOne">
                                                             <div class="card-header">
                                                                 <h4 class="card-title w-100">
-                                                                    Проекты
+                                                                   Вложенные задачи
                                                                 </h4>
                                                             </div>
                                                         </a>
@@ -57,15 +57,15 @@
                                                                     <tr style="font: status-bar;">
                                                                         <th>Название</th>
                                                                         <th>Автор</th>
-
+                                                                        <th>Дедлайн</th>
                                                                     </tr>
                                                                     </thead>
                                                                     <tbody>
-                                                                <#list childProject as child>
-                                                                    <tr>
-                                                                        <td><a href="/project/${child.id}"><b>${child.name}</b></a></td>
-                                                                        <td>${child.author.surname} ${child.author.firstName}</td>
-
+                                                                <#list childTask as child>
+                                                                    <tr <#if child.deadLineStatus == true>style="color:#f90606; font-weight: bold;"</#if>>
+                                                                        <td><a <#if child.deadLineStatus == true>style="color:#f90606; font-weight: bold;"</#if> href="/task/${child.id}"><b>${child.name}</b></a></td>
+                                                                        <td>${child.responsible.surname} ${child.responsible.firstName}</td>
+                                                                        <td>${child.deadline}</td>
                                                                     </tr>
                                                                 </#list>
                                                                     </tbody>
@@ -75,26 +75,8 @@
                                                     </div>
                                                 </div>
                                                 </#if>
-                                                <#if childTask ??>
-                                                <div id="accordion">
-                                                    <div class="card card-success card-outline">
-                                                        <a class="d-block w-100 collapsed" data-toggle="collapse" href="#collapseTwo">
-                                                            <div class="card-header">
-                                                                <h4 class="card-title w-100">
-                                                                    Задачи
-                                                                </h4>
-                                                            </div>
-                                                        </a>
-                                                        <div id="collapseTwo" class="collapse show" data-parent="#accordion">
-                                                            <div class="card-body">
-
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                </#if>
                                                 <hr />
-                                                <h4>Комментарии к проекту</h4>
+                                                <h4>Комментарии к задаче</h4>
                                                 <#if comments ??>
                                                 <#list comments as comment>
                                                 <div class="post" style="border-bottom: 1px solid #adb5bd;">
@@ -112,7 +94,7 @@
                                                     <p>
                                                         <#if comment.file??>
                                                             <#list comment.file as file>
-                                                                <a href="/project/file/${file.name}?id=${file.id}" class="link-black text-sm"><i class="fas fa-link mr-1"></i> ${file.name}</a>
+                                                                <a href="/task/file/${file.name}?id=${file.id}" class="link-black text-sm"><i class="fas fa-link mr-1"></i> ${file.name}</a>
                                                             </#list>
                                                         </#if>
                                                     </p>
@@ -124,7 +106,7 @@
                                         <div class="row" style="margin-top: 20px;">
                                             <div class="col-md-12">
                                                 <h4>Написать комментарий</h4>
-                                                <form enctype="multipart/form-data" action="/project/comment" method="post">
+                                                <form enctype="multipart/form-data" action="/task/comment" method="post">
                                                     <div class="row">
                                                         <div class="col-md-12">
                                                             <textarea id="summernote" name="editordata"></textarea>
@@ -141,7 +123,7 @@
                                                                 <input type="file" name="file" multiple id="js-file" >
                                                                <!-- <label class="custom-file-label" for="customFile">Выбрать файлы</label>-->
                                                                 <input type="hidden" name="_csrf" value="${_csrf.token}" />
-                                                                <input type="hidden" name="project_id" value="${project.id}" />
+                                                                <input type="hidden" name="task_id" value="${task.id}" />
                                                             </div>
                                                         </div>
                                                         <div class="col-md-4">
@@ -154,49 +136,46 @@
                                     </div>
                                 </div>
                             </div>
-                        <!-- /.card-body -->
-                        </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card card-primary card-outline">
-                        <div class="card-body box-profile">
-                            <div class="text-center">
-                                <h3 class="profile-username text-center">Команда проекта</h3>
-                            </div>
-                            <ul class="list-group list-group-unbordered list-unstyled mb-3">
-                                <#list project.team as team>
-                                    <li class="list-group-item">
-                                        <img style="width: 20px; padding-bottom: 5px;" src="../static/img/avatar.jpg" alt="image"> ${team.surname} ${team.firstName}</a>
-                                    </li>
-                                </#list>
-                            </ul>
                         </div>
                     </div>
-                    <div class="card card-primary card-outline">
-                        <div class="card-body box-profile">
-                            <div class="text-center">
-                                <h3 class="profile-username text-center">Файлы проекта</h3>
-                            </div>
-                            <ul class="list-group list-group-unbordered list-unstyled mb-3">
-                                <#if comments ??>
-                                    <#list comments as comment>
-                                        <#if comment.file??>
-                                            <#list comment.file as file>
-                                                <li>
-                                                    <a href="/project/file/${file.name}?id=${file.id}" class="class="btn-link text-secondary""><i class="far fa-file"></i> ${file.name}</a>
-                                                </li>
-                                            </#list>
-                                        </#if>
+                    <div class="col-md-3">
+                        <div class="card card-success card-outline">
+                            <div class="card-body box-profile">
+                                <div class="text-center">
+                                    <h3 class="profile-username text-center">Команда проекта</h3>
+                                </div>
+                                <ul class="list-group list-group-unbordered list-unstyled mb-3">
+                                    <#list task.team as team>
+                                        <li class="text-muted">
+                                            <img style="width: 20px; padding-bottom: 5px;" src="../static/img/avatar.jpg" alt="image"> ${team.surname} ${team.firstName}</a>
+                                        </li>
                                     </#list>
-                                </#if>
-                            </ul>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="card card-success card-outline">
+                            <div class="card-body box-profile">
+                                <div class="text-center">
+                                    <h3 class="profile-username text-center">Файлы проекта</h3>
+                                </div>
+                                <ul class="list-group list-group-unbordered list-unstyled mb-3">
+                                    <#if comments ??>
+                                        <#list comments as comment>
+                                            <#if comment.file??>
+                                                <#list comment.file as file>
+                                                    <li>
+                                                        <a href="/task/file/${file.name}?id=${file.id}" class="class="btn-link text-secondary""><i class="far fa-file"></i> ${file.name}</a>
+                                                    </li>
+                                                </#list>
+                                            </#if>
+                                        </#list>
+                                    </#if>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            </div>
-            <!-- /.card -->
-
         </section>
     </div>
 </div>

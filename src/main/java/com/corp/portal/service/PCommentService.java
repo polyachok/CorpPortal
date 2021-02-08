@@ -37,10 +37,10 @@ public class PCommentService {
             comment.setParent(project.getId());
             comment.setDescription(form.get("editordata"));
             pCommentRepo.save(comment);
-            List list = pCommentRepo.findByParent(project.getId(), Sort.by(Sort.Direction.DESC, "id"));
             List list1 = pCommentRepo.findByParentOrderByDatecreateAsc(project.getId());
             project.setComment(list1);
             PComment commentDb = pCommentRepo.findById(comment.getId()).get();
+
             if (!file[0].getOriginalFilename().isEmpty()){
                 fileService.addFile(uploadPath,file,user,commentDb);
             }
@@ -49,9 +49,9 @@ public class PCommentService {
         return project;
     }
 
-    public List findAllByParent(Project project){
+    public List findAllByParent(Long project){
         System.out.println("PCommentService.findAllByParent 1");
-        List list = pCommentRepo.findByParentOrderByDatecreateAsc(project.getId());
+        List list = pCommentRepo.findByParentOrderByDatecreateAsc(project);
         System.out.println("PCommentService.findAllByParent");
         return list;
     }

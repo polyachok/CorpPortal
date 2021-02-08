@@ -8,17 +8,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-public class PComment extends AbstractComment {
+public class TComment extends AbstractComment {
 
     private Long parent;
 
     @ManyToMany
     @JoinTable(
-            name = "pcomment_file",
+            name = "t_comment_file",
             joinColumns = { @JoinColumn(name = "comment")},
             inverseJoinColumns = { @JoinColumn (name= "file")}
     )
-    private Set<PrCoFile> file = new HashSet<>();
+    private Set<TaCoFile> file = new HashSet<>();
 
     public Long getParent() {
         return parent;
@@ -28,11 +28,11 @@ public class PComment extends AbstractComment {
         this.parent = parent;
     }
 
-    public Set<PrCoFile> getFile() {
+    public Set<TaCoFile> getFile() {
         return file;
     }
 
-    public void setFile(Set<PrCoFile> file) {
+    public void setFile(Set<TaCoFile> file) {
         this.file = file;
     }
 }

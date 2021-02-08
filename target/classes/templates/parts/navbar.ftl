@@ -65,7 +65,7 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="/config" class="nav-link">
+                            <a href="/task/incoming" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Входящие</p>
                             </a>
@@ -73,7 +73,7 @@
                     </ul>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="/user" class="nav-link">
+                            <a href="/task/outgoing" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Исходящие</p>
                             </a>

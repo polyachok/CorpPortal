@@ -18,13 +18,7 @@ public abstract class AbstractComment {
     @JoinColumn(name = "author")
     private User author;
 
-    @ManyToMany
-    @JoinTable(
-            name = "pcomment_file",
-            joinColumns = { @JoinColumn (name = "comment")},
-            inverseJoinColumns = { @JoinColumn (name= "file")}
-    )
-    private Set<PrCoFile> file = new HashSet<>();
+
 
     public Long getId() {
         return id;
@@ -58,11 +52,4 @@ public abstract class AbstractComment {
         this.author = author;
     }
 
-    public Set<PrCoFile> getFile() {
-        return file;
-    }
-
-    public void setFile(Set<PrCoFile> file) {
-        this.file = file;
-    }
 }

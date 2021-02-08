@@ -22,7 +22,6 @@ public class configController {
 
     @GetMapping
     public String getConfigure(Model model){
-        System.out.println("configController.getConfigure");
         model.addAttribute("config", configRepo.findAll());
         return "config";
     }

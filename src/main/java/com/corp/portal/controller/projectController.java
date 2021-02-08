@@ -44,9 +44,8 @@ private PCommentService commentService;
     public String projectList(Model model){
     UserDetails userDetails =
             (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    List projectList = projectService.findByAuthor((User) userDetails);
+    List projectList = projectService.findByAuthorOrTeam((User) userDetails);
     if (projectList != null) {
-        System.out.println("projectController.projectList");
         model.addAttribute("projects", projectList);
     }
     return "proj";
@@ -54,9 +53,11 @@ private PCommentService commentService;
 
 @GetMapping("/add")
     public String projAdd(Model model){
-    List projectList = projectService.findAll();
+    UserDetails userDetails =
+            (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+    List projectList = projectService.findByAuthorOrTeam((User) userDetails);
     if (projectList != null) {
-        System.out.println("projectController.projectList");
         model.addAttribute("projects", projectList);
     }
         List userList = userService.findAll();
@@ -70,19 +71,19 @@ private PCommentService commentService;
             Project project,
             Model model) {
         projectService.addProject(project, user);
-        System.out.println("projectController.createProject");
         return "redirect:/project";
     }
 
     @GetMapping("{project}")
     public String projectInfo(@PathVariable Project project, Model model){
-        List<Project> child = projectService.getByParent(project);
-       // List<PComment> comment = projectService.findById(project.getId()).getComment();
-        List<PComment> comment = commentService.findAllByParent(project);
-
-        model.addAttribute("childList" , child);
-        model.addAttribute("comments", comment);
-        System.out.println("projectController.projectInfo");
+        List<Project> childProject = projectService.getByParent(project);
+        if (childProject.size() != 0){
+            model.addAttribute("childProject" , childProject);
+        }
+        List<PComment> comment = commentService.findAllByParent(project.getId());
+        if (comment.size() != 0){
+            model.addAttribute("comments", comment);
+        }
         model.addAttribute("project", projectService.findById(project.getId()));
         return "projInfo";
     }
@@ -117,12 +118,13 @@ private PCommentService commentService;
     public void getFile(@PathVariable("file_name") String fileName,
                         @RequestParam("id") String fileId,
                         HttpServletResponse response
-                        ){
+                        ) throws IOException {
         PrCoFile fileDb = projectService.getFile(fileId);
         String filePath = fileDb.getPath() + "/" + fileDb.getName();
         Path file = Paths.get(filePath);
         System.out.println("projectController.getFile");
-        response.setContentType("application/msword");
+        String type = Files.probeContentType(file);
+        response.setContentType(type);
         response.setHeader("Content-disposition", "attachment; filename=" + fileName);
 
         try {

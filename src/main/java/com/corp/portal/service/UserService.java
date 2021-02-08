@@ -107,7 +107,7 @@ public class UserService implements UserDetailsService {
         usr.setPatronomic(form.get("patronomic"));
         usr.setEmail(form.get("email"));
         usr.setmPhone(form.get("mPhone"));
-
+        usr.setwPhone(form.get("wPhone"));
         userRepo.saveAndFlush(usr);
         return true;
     }

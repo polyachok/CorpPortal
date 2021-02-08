@@ -12,8 +12,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/user")
@@ -58,7 +61,8 @@ public class userController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("{user}")
     public String userEditForm(@PathVariable User user, Model model){
-        model.addAttribute("user", user);
+        User userDb = userService.findById(user.getId());
+        model.addAttribute("usr", userDb);
         model.addAttribute("roles", Role.values());
         return "userEdit";
     }
@@ -93,6 +97,40 @@ public class userController {
             return "redirect:/user/profile";
         }
         return "profile";
+    }
+
+    @PostMapping("update")
+    public String updateUser(
+            @Valid User user,
+            BindingResult bindingResult,
+            @RequestParam Map<String, String> form,
+            @RequestParam("userId") User usr,
+            Model model
+    ){
+        if (bindingResult.hasErrors()){
+            Map<String, String> errors = UtilsController.getErrors(bindingResult);
+            model.mergeAttributes(errors);
+            model.addAttribute("usr", usr);
+            model.addAttribute("roles", Role.values());
+            Set<String> roles = Arrays.stream(Role.values())
+                    .map(Role::name)
+                    .collect(Collectors.toSet());
+            System.out.println("userController.updateUser 1");
+            usr.getRoles().clear();
+            System.out.println("userController.updateUser 2");
+            for (String key : form.keySet()) {
+                if (roles.contains(key)) {
+                    usr.getRoles().add(Role.valueOf(key));
+                }
+            }
+            System.out.println(errors);
+            return "userEdit";
+        }
+        if (userService.updateProfile(usr,form)) {
+            model.addAttribute("usr", usr);
+            return "redirect:/user";
+        }
+        return userList(model);
     }
 
 }
