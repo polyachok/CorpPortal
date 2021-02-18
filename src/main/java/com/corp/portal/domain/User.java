@@ -54,6 +54,8 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
 
+
+
     public boolean isAdmin(){
         return roles.contains(Role.ADMIN);
     }
@@ -203,4 +205,6 @@ public class User implements UserDetails {
     public void setStatus(String status) {
         this.status = status;
     }
+
+
 }

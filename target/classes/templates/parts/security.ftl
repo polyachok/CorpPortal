@@ -10,6 +10,7 @@
       surname = user.getSurname()
       isAdmin = user.isAdmin()
       user_id = user.getId()
+
   >
 <#else>
     <#assign

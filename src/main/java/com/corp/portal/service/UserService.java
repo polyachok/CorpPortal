@@ -82,11 +82,9 @@ public class UserService implements UserDetailsService {
         return userRepo.findById(user_id).get();
     }
     public void saveUser(User user){
-
-
-
         userRepo.save(user);
     }
+
     //todo добавить редактирование всех полей
     public Boolean updateProfile( User user, Map<String, String> form) {
         /*String userEmail = user.getEmail();

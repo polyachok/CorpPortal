@@ -25,7 +25,7 @@
             </div>
         </div>
         <#if isRegisterForm>
-        <div class="form-group row">
+       <!-- <div class="form-group row">
             <label for="inputEmail" class="col-sm-2 col-form-label">Email:</label>
             <div class="col-sm-6">
                 <input type="email" name="email" class="form-control ${(emailError??)?string('is-invalid', '')}"
@@ -36,12 +36,12 @@
                     </div>
                 </#if>
             </div>
-        </div>
+        </div>-->
         </#if>
-        <#if !isRegisterForm><a href="/registration">Registration</a></#if>
+       <!-- <#if !isRegisterForm><a href="/registration">Registration</a></#if>
          <input type="hidden" name="_csrf" value="${_csrf.token}" />
         <button type="submit" class="btn btn-primary">Sign In</button>
-    </form>
+    </form>-->
 </#macro>
 
 <#macro logout>

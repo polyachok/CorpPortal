@@ -63,12 +63,12 @@
                 </div>
                 <input type="hidden" name="_csrf" value="${_csrf.token}" />
             </form>
-            <p class="mb-1">
+           <!-- <p class="mb-1">
                 <a href="forgot-password.html">Восстановить пароль</a>
             </p>
             <p class="mb-0">
                 <a href="/registration" class="text-center">Регистрация</a>
-            </p>
+            </p>-->
         </div>
         <!-- /.card-body -->
     </div>

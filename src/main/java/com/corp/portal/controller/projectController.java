@@ -1,9 +1,6 @@
 package com.corp.portal.controller;
 
-import com.corp.portal.domain.PComment;
-import com.corp.portal.domain.PrCoFile;
-import com.corp.portal.domain.Project;
-import com.corp.portal.domain.User;
+import com.corp.portal.domain.*;
 import com.corp.portal.service.PCommentService;
 import com.corp.portal.service.ProjectService;
 import com.corp.portal.service.UserService;
@@ -40,6 +37,7 @@ private UserService userService;
 private PCommentService commentService;
 
 
+
 @GetMapping
     public String projectList(Model model){
     UserDetails userDetails =
@@ -74,16 +72,41 @@ private PCommentService commentService;
         return "redirect:/project";
     }
 
+    @PostMapping("update")
+    public String updateProject(
+            Project project
+    ){
+    projectService.updateProject(project);
+    return "redirect:/project/"+ project.getId();
+    }
+
     @GetMapping("{project}")
     public String projectInfo(@PathVariable Project project, Model model){
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = (User) userDetails;
         List<Project> childProject = projectService.getByParent(project);
         if (childProject.size() != 0){
             model.addAttribute("childProject" , childProject);
+        }
+        List<Task> childTask = projectService.getByParentProject(user, project);
+
+        if (childTask.size() !=0){
+            model.addAttribute("childTask", childTask);
         }
         List<PComment> comment = commentService.findAllByParent(project.getId());
         if (comment.size() != 0){
             model.addAttribute("comments", comment);
         }
+        if (user.getId().equals(project.getAuthor().getId())){
+            List projectList = projectService.findByAuthorOrTeam(user);
+            if (projectList != null) {
+                model.addAttribute("projects", projectList);
+            }
+            List userList = userService.findAll();
+            model.addAttribute("userList",userList);
+            System.out.println("projectController.projectInfo");
+        }
+        model.addAttribute("team", project.getTeam());
         model.addAttribute("project", projectService.findById(project.getId()));
         return "projInfo";
     }

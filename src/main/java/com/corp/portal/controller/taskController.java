@@ -51,7 +51,7 @@ public class taskController {
     @GetMapping("/incoming")
     public String taskInList(Model model) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        List taskList = taskService.findByTeam((User) userDetails);
+        List taskList = taskService.findBuTeamOrResponsible((User) userDetails);
         if (taskList != null){
             model.addAttribute("tasks", taskList);
         }
@@ -79,19 +79,31 @@ public class taskController {
             @AuthenticationPrincipal User user,
             @RequestParam Map<String, String> form,
             Task task) throws ParseException {
-        taskService.createTask(user, form, task);
+        taskService.createTask(user, task);
         return "redirect:/task/outgoing";
     }
 
+
     @GetMapping("{task}")
     public String taskInfo(@PathVariable Task task, Model model){
-        List<Task> childList = taskService.getByParent(task);
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = (User) userDetails;
+        List<Task> childList = taskService.getByParentTask(task);
         if (childList.size() != 0){
             model.addAttribute("childTask", childList);
         }
         List<TComment> comment = commentService.findAllByParent(task.getId());
         if (comment.size() != 0){
             model.addAttribute("comments", comment);
+        }
+        if (user.getId().equals(task.getAuthor().getId())){
+            List projectList = taskService.findProjectByAuthorOrTeam(user);
+            if (projectList != null) {
+                model.addAttribute("projects", projectList);
+            }
+            List userList = userService.findAll();
+            model.addAttribute("userList",userList);
+            model.addAttribute("task",task);
         }
         return "taskInfo";
     }

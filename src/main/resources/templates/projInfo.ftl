@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/html">
+<html lang="en" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>CorpPortal</title>
@@ -13,6 +13,8 @@
     <!-- Theme style -->
     <link rel="stylesheet" href="../static/css/adminlte.min.css">
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+    <link href="../static/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../static/css/select2-bootstrap4.min.css" >
 </head>
 <body  class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
@@ -27,9 +29,16 @@
                 <div class="col-md-9">
                         <div class="card card-primary card-outline">
                             <div class="card-body box-profile">
-                                    <div class="post">
-                                        <h4><strong>${project.name}</strong></h4>
+                                <div class="post">
+                                    <div class="row">
+                                        <div class="col-md-11">
+                                            <h4><strong>${project.name}</strong>&emsp;<#if user.id == project.author.id ><a class="btn" data-toggle="modal" data-target="#myModal" style="color: #666;"><i class="fas fa-edit"></i></a></#if></h4>
+                                        </div>
+                                        <div class="col-md-1"></div>
                                     </div>
+
+                                </div>
+
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="row">
@@ -57,7 +66,6 @@
                                                                     <tr style="font: status-bar;">
                                                                         <th>Название</th>
                                                                         <th>Автор</th>
-
                                                                     </tr>
                                                                     </thead>
                                                                     <tbody>
@@ -65,7 +73,6 @@
                                                                     <tr>
                                                                         <td><a href="/project/${child.id}"><b>${child.name}</b></a></td>
                                                                         <td>${child.author.surname} ${child.author.firstName}</td>
-
                                                                     </tr>
                                                                 </#list>
                                                                     </tbody>
@@ -87,7 +94,24 @@
                                                         </a>
                                                         <div id="collapseTwo" class="collapse show" data-parent="#accordion">
                                                             <div class="card-body">
-
+                                                                <table class="table table-sm text-nowrap table-borderless table-hover">
+                                                                    <thead>
+                                                                    <tr style="font: status-bar;">
+                                                                        <th>Название</th>
+                                                                        <th>Автор</th>
+                                                                        <th>Ответственный</th>
+                                                                    </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                    <#list childTask as child>
+                                                                        <tr <#if child.deadLineStatus == true>style="color:#f90606; font-weight: bold;"</#if>>
+                                                                            <td><a <#if child.deadLineStatus == true>style="color:#f90606; font-weight: bold;"</#if> href="/task/${child.id}"><b>${child.name}</b></a></td>
+                                                                            <td>${child.author.surname} ${child.author.firstName}</td>
+                                                                            <td>${child.responsible.surname} ${child.responsible.firstName}</td>
+                                                                        </tr>
+                                                                    </#list>
+                                                                    </tbody>
+                                                                </table>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -132,7 +156,6 @@
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-md-12" id="result">
-
                                                         </div>
                                                     </div>
                                                     <div class="row">
@@ -196,7 +219,81 @@
             </div>
             </div>
             <!-- /.card -->
+            <#if user.id == project.author.id>
+            <div class="modal" tabindex="-1" role="dialog" id="myModal">
+                <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <form action="/project/update" method="post">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Редактирование проекта</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="exampleInputName">Название проекта</label>
+                                    <input type="text" name="name" class="form-control" id="exampleInputName" value="${project.name}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputName">Описание</label>
+                                    <textarea id="summernote1" name="description" value="">${project.description}</textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>Надпроект</label>
+                                    <select name="parent" class="select2bs4" style="width: 100%;">
+                                        <option value="0">-</option>
+                                        <#if projects ??>
+                                            <#list projects as pr>
+                                                <#if project.parent == pr.id>
+                                                    <#assign selected="selected">
+                                                <#else>
+                                                    <#assign selected="">
+                                                </#if>
+                                                <option <#if selected == "selected">${selected}</#if> value="${pr.id}">${pr.name}</option>
+                                            </#list>
+                                        </#if>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Команда проекта</label>
+                                    <select name="team" class="select2bs4" multiple="multiple" style="width: 100%;">
+                                        <#list userList as usr>
+                                            <#if usr.surname != "user">
+                                                <#if team ??>
+                                                    <#list team as one>
+                                                        <#if one.id == usr.id>
+                                                            <#assign selected="selected">
+                                                            <#else>
+                                                            <#assign selected="">
+                                                        </#if>
+                                                    </#list>
+                                                </#if>
+                                                <option <#if selected == "selected">${selected}</#if> value="${usr.id}">${usr.surname} ${usr.firstName}</option>
 
+                                            </#if>
+                                        </#list>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Статус</label>
+                                    <select name="status" class="form-control">
+                                        <option >Активный</option>
+                                        <option >Архивный</option>
+                                    </select>
+                                </div>
+                                <input type="hidden" name="_csrf" value="${_csrf.token}" />
+                                <input type="hidden" name="id" value="${project.id}" />
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </form>
+                    </div>
+                </div>
+            </div>
+            </#if>
         </section>
     </div>
 </div>
@@ -215,16 +312,23 @@
 <script src="../static/js/adminlte.min.js"></script>
 <script src="../static/js/summernote.min.js"></script>
 <script src="../static/js/bs-custom-file-input.min.js"></script>
-
+<script type="text/javascript" src="../static/js/select2.full.min.js"></script>
 
 <script>
-$(document).ready(function() {
-$('#summernote').summernote();
-});
+    $('#myModal').on('shown.bs.modal', function () {
+        $('#myInput').trigger('focus')
+    })
 
+$(document).ready(function() {
+    $('#summernote').summernote();
+    $('#summernote1').summernote();
+});
 
 $(function () {
     bsCustomFileInput.init();
+    $('.select2bs4').select2({
+        theme: 'bootstrap4'
+    });
 });
 
 $("#js-file").change(function(){
@@ -251,7 +355,8 @@ $("#js-file").change(function(){
             }
         });
     }
-});``
+});
+
 </script>
 </body>
 </html>

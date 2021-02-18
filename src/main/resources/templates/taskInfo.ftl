@@ -13,6 +13,8 @@
     <!-- Theme style -->
     <link rel="stylesheet" href="../static/css/adminlte.min.css">
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+    <link href="../static/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../static/css/select2-bootstrap4.min.css" >
 </head>
 <body  class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
@@ -27,9 +29,8 @@
                         <div class="card card-success card-outline">
                             <div class="card-body box-profile">
                                     <div class="post">
-                                        <h4><strong>${task.name}</strong></h4>
+                                        <h4><strong>${task.name}</strong><#if user.id == task.author.id ><a class="btn" data-toggle="modal" data-target="#myModal" style="color: #666;"><i class="fas fa-edit"></i></a></#if></h4>
                                     </div>
-
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="row">
@@ -139,10 +140,61 @@
                         </div>
                     </div>
                     <div class="col-md-3">
+                                <div class="card card-success card-outline">
+                                    <div class="card-body box-profile">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div >
+                                                    <h4 class="profile-username">Автор</h4>
+                                                </div>
+                                                <ul class="list-group list-group-unbordered list-unstyled mb-3">
+                                                        <li class="text-muted">
+                                                            <img style="width: 20px; padding-bottom: 5px;" src="../static/img/avatar.jpg" alt="image"> ${task.author.surname} ${task.author.firstName}</a>
+                                                        </li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div >
+                                                    <h4 class="profile-username">Ответственный</h4>
+                                                </div>
+                                                <ul class="list-group list-group-unbordered list-unstyled mb-3">
+                                                    <li class="text-muted">
+                                                        <img style="width: 20px; padding-bottom: 5px;" src="../static/img/avatar.jpg" alt="image"> ${task.responsible.surname} ${task.responsible.firstName}</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <hr />
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div >
+                                                    <h4 class="profile-username">Дата начала</h4>
+                                                </div>
+                                                <ul class="list-group list-group-unbordered list-unstyled mb-3">
+                                                    <li class="text-muted">
+                                                         ${task.datecreate}
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div >
+                                                    <h4 class="profile-username">Деадлайн</h4>
+                                                </div>
+                                                <ul class="list-group list-group-unbordered list-unstyled mb-3">
+                                                    <li class="text-muted">
+                                                        ${task.deadline}
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
                         <div class="card card-success card-outline">
                             <div class="card-body box-profile">
                                 <div class="text-center">
-                                    <h3 class="profile-username text-center">Команда проекта</h3>
+                                    <h4 class="profile-username text-center">Команда</h4>
                                 </div>
                                 <ul class="list-group list-group-unbordered list-unstyled mb-3">
                                     <#list task.team as team>
@@ -156,7 +208,7 @@
                         <div class="card card-success card-outline">
                             <div class="card-body box-profile">
                                 <div class="text-center">
-                                    <h3 class="profile-username text-center">Файлы проекта</h3>
+                                    <h4 class="profile-username text-center">Файлы</h4>
                                 </div>
                                 <ul class="list-group list-group-unbordered list-unstyled mb-3">
                                     <#if comments ??>
@@ -176,6 +228,109 @@
                     </div>
                 </div>
             </div>
+            <#if user.id == task.author.id>
+            <div class="modal" tabindex="-1" role="dialog" id="myModal">
+                <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <form action="/task/update" method="post">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Редактирование задачи</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="exampleInputName">Название задачи</label>
+                                    <input type="text" name="name" class="form-control" id="exampleInputName" value="${task.name}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputName">Описание</label>
+                                    <textarea id="summernote1" name="description" value="">${task.description}</textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>Надпроект</label>
+                                    <select name="parent" class="select2bs4" style="width: 100%;">
+                                        <option value="0">-</option>
+                                        <#if projects ??>
+                                            <#list projects as project>
+                                                <option value="${project.id}">${project.name}</option>
+                                            </#list>
+                                        </#if>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Надзадача</label>
+                                    <select name="parentT" class="select2bs4" style="width: 100%;">
+                                        <option value="0">-</option>
+                                        <#if taskList ??>
+                                            <#list taskList as task>
+                                                <option value="${task.id}">${task.name} - ${task.author.firstName} ${task.author.surname}</option>
+                                            </#list>
+                                        </#if>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Ответственный</label>
+                                    <select name="responsible" class="select2bs4_1" style="width: 100%;">
+                                        <option value="0">-</option>
+                                        <#if userList ??>
+                                            <#list userList as usr>
+                                                <#if task.responsible.id == usr.id>
+                                                    <#assign selected1="selected">
+                                                <#else> <#assign selected1=" ">
+                                                </#if>
+                                                <#if usr.surname != "user">
+                                                    <option <#if selected1 == "selected">${selected1}</#if> value="${usr.id}">${usr.surname} ${usr.firstName}</option>
+                                                </#if>
+                                            </#list>
+                                        </#if>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Команда проекта</label>
+                                    <select name="team" class="select2bs4" multiple="multiple" style="width: 100%;">
+                                        <#list userList as usr>
+                                            <#if usr.surname != "user">
+                                                <#if task.team ??>
+                                                    <#list task.team as one>
+                                                        <#if one.id == usr.id>
+                                                            <#assign selected="selected">
+                                                        </#if>
+                                                    </#list>
+                                                </#if>
+                                                <option <#if selected??>${selected}</#if> value="${usr.id}">${usr.surname} ${usr.firstName}</option>
+                                            </#if>
+                                        </#list>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Дата начала</label>
+                                    <input type="text" name="datecreate" class="form-control datetimepicker-input" id="datetimepicker5" data-toggle="datetimepicker" data-target="#datetimepicker5"/>
+                                </div>
+                                <div class="form-group">
+                                    <label>Дедлайн</label>
+                                    <input type="text" name="deadline" class="form-control datetimepicker-input" id="datetimepicker6" data-toggle="datetimepicker" data-target="#datetimepicker6"/>
+                                </div>
+                                <div class="form-group">
+                                    <label>Статус</label>
+                                    <select name="status" class="form-control">
+                                        <option >Активный</option>
+                                        <option >Архивный</option>
+                                    </select>
+                                </div>
+                                <input type="hidden" name="_csrf" value="${_csrf.token}" />
+                                <input type="hidden" name="id" value="${task.id}" />
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            </#if>
         </section>
     </div>
 </div>
@@ -194,14 +349,30 @@
 <script src="../static/js/adminlte.min.js"></script>
 <script src="../static/js/summernote.min.js"></script>
 <script src="../static/js/bs-custom-file-input.min.js"></script>
+<script type="text/javascript" src="../static/js/select2.full.min.js"></script>
 
 
 <script>
+    $('#myModal1').on('shown.bs.modal', function () {
+        $('#myInput').trigger('focus')
+    })
+
+
+
 $(document).ready(function() {
-$('#summernote').summernote();
+    $('#summernote').summernote();
+    $('#summernote1').summernote();
 });
 
+    $(function () {
 
+        $('.select2bs4_1').select2({
+            theme: 'bootstrap4'
+        });
+        $('.select2bs4').select2({
+            theme: 'bootstrap4'
+        });
+    });
 $(function () {
     bsCustomFileInput.init();
 });

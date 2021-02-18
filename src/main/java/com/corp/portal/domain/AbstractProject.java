@@ -24,6 +24,16 @@ public abstract class AbstractProject {
 
     private String status;
 
+    private String path;
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
     public Long getId() {
         return id;
     }

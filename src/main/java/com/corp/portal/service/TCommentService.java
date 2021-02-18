@@ -35,7 +35,6 @@ public class TCommentService {
 
     public Task addComment(User user, Map<String, String> form, MultipartFile[] file) throws IOException {
         TComment comment = new TComment();
-        String uploadPath = configRepo.findByConfigname("UploadPath").getParam();
 
         Task task = taskRepo.findById(Long.parseLong(form.get("task_id"))).get();
         comment.setAuthor(user);
@@ -47,7 +46,7 @@ public class TCommentService {
         task.setComment(list);
         TComment tCommentDb = commentRepo.findById(comment.getId()).get();
         if (!file[0].getOriginalFilename().isEmpty()){
-            taskCoFileService.addFile(uploadPath,file,user,tCommentDb);
+            taskCoFileService.addFile(task.getPath(),file,user,tCommentDb);
         }
         taskRepo.save(task);
         return task;
