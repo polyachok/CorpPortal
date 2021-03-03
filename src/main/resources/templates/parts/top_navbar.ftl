@@ -10,6 +10,7 @@
             <div class="dropdown-menu" style="margin-left: 2%;">
                 <a class="dropdown-item" href="/project/add"">Проект</a>
                 <a class="dropdown-item" href="/task/add">Задачу</a>
+                <a class="dropdown-item" href="/agreement/add">Согласование</a>
             </div>
         </li>
 

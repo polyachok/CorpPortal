@@ -1,5 +1,6 @@
 package com.corp.portal.service;
 
+import com.corp.portal.domain.Agreement;
 import com.corp.portal.domain.Config;
 import com.corp.portal.domain.Project;
 import com.corp.portal.domain.Task;
@@ -44,10 +45,32 @@ public class FileService {
         return newName;
     }
 
+    public String updateTaskPath(Task task, String parentPath){
+        String newName = generatePath(parentPath, task.getName(), task.getDatecreate());
+        Path newPath = Paths.get(newName);
+        Path oldDir = Paths.get(task.getPath());
+        try {
+            Files.move(oldDir,newPath, REPLACE_EXISTING);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        return newName;
+    }
+
     public String createTaskPath(Task task, String parentPath){
         String generateName = generatePath(parentPath, task.getName(), task.getDatecreate());
         File dir = new File(generateName);
         if (!createPath(dir)){
+        }
+        return generateName;
+    }
+
+    public String createAgPath(Agreement agreement){
+        String parentPath = "";
+        String generateName = generatePath(parentPath, agreement.getName(), agreement.getDatecreate());
+        File dir = new File(generateName);
+        if (!createPath(dir)){
+
         }
         return generateName;
     }

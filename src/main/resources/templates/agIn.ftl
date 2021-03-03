@@ -6,13 +6,12 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.23/b-1.6.5/b-colvis-1.6.5/b-print-1.6.5/fh-3.1.7/r-2.2.7/sc-2.0.3/sb-1.0.1/sp-1.2.2/datatables.min.css"/>
 
     <section class="content">
-
         <div class="container-fluid" style="padding-top: 15px;">
             <div class="row">
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h4>${taskType}</h4>
+                            <h4>${agType}</h4>
                             <!--<a class="btn btn-app" style="height: 40px; min-width: 40px; padding: 10px 5px; margin: 0px 0px 0px 8px;" href="/task/add">
                                 <i class="fas fa-plus"></i>
                             </a>-->
@@ -23,20 +22,18 @@
                                     <tr style="font: status-bar;">
                                         <th>Название</th>
                                         <th>Дата начала</th>
-                                        <th>Ответственный</th>
-                                        <th>Деадлайн</th>
+                                        <th>Дедлайн</th>
                                         <th>Статус</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <#if tasks ??>
-                                    <#list tasks as task>
-                                        <tr <#if task.deadLineStatus == true>style="color:#f90606; font-weight: bold;"</#if>>
-                                            <td><a <#if task.deadLineStatus == true>style="color:#f90606; font-weight: bold;"</#if> href="/task/${task.id}"><b>${task.name}</b></a></td>
-                                            <td>${task.datecreate}</td>
-                                            <td>${task.responsible.firstName} ${task.responsible.surname}</td>
-                                            <td>${task.deadline}</td>
-                                            <td>${task.status}</td>
+                                    <#if agreements ??>
+                                    <#list agreements as ag>
+                                        <tr>
+                                            <td><a href="/task/${ag.id}"><b>${ag.name}</b></a></td>
+                                            <td>${ag.datecreate}</td>
+                                            <td>${ag.deadline}</td>
+                                            <td>${ag.status}</td>
                                         </tr>
                                     </#list>
                                     </#if>

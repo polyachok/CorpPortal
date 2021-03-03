@@ -76,13 +76,13 @@
                                     <input type="text" name="deadline" class="form-control datetimepicker-input" id="datetimepicker6" data-toggle="datetimepicker" data-target="#datetimepicker6"/>
                                 </div>
 
-                                <div class="form-group">
+                                <!--<div class="form-group">
                                     <label>Статус</label>
                                     <select name="status" class="form-control">
                                                 <option >Активный</option>
                                                 <option >Архивный</option>
                                     </select>
-                                </div>
+                                </div>-->
                                 <input type="hidden" name="_csrf" value="${_csrf.token}" />
                                 </div>
                                 <div class="card-footer">

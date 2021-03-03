@@ -44,14 +44,14 @@
                                     <div class="post">
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <h4><strong>${task.name}</strong><#if user.id == task.author.id ><a class="btn" data-toggle="modal" data-target="#myModal" style="color: #666;"><i class="fas fa-edit"></i></a></#if></h4>
+                                                <h4><strong>${agreement.name}</strong><#if user.id == agreement.author.id ><a class="btn" data-toggle="modal" data-target="#myModal" style="color: #666;"><i class="fas fa-edit"></i></a></#if></h4>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-8">
-                                                <h5>Статус задачи - ${task.status}</h5>
+                                                <h5>Статус - ${agreement.status}</h5>
                                             </div>
-                                                <#if taskAction != 0>
+                                                <#if agAction != 0>
                                                     <#switch taskAction>
                                                         <#case 1>
                                                         <div class="col-md-2">
@@ -99,13 +99,13 @@
                                     <div class="col-md-12">
                                         <div class="row">
                                             <div class="col-12 col-sm-12">
-                                                <p>${task.description}</p>
+                                                <p>${(agreement.description)!""}</p>
                                             </div>
                                         </div>
                                         <hr />
                                         <div class="row">
                                             <div class="col-12">
-                                                <#if childTask ??>
+                                                <#if agTask ??>
                                                 <div id="accordion">
                                                     <div class="card card-success card-outline">
                                                         <a class="d-block w-100 collapsed" data-toggle="collapse" href="#collapseOne">
@@ -123,14 +123,16 @@
                                                                         <th>Название</th>
                                                                         <th>Автор</th>
                                                                         <th>Дедлайн</th>
+                                                                        <th>Статус</th>
                                                                     </tr>
                                                                     </thead>
                                                                     <tbody>
-                                                                <#list childTask as child>
+                                                                <#list agTask as child>
                                                                     <tr <#if child.deadLineStatus == true>style="color:#f90606; font-weight: bold;"</#if>>
                                                                         <td><a <#if child.deadLineStatus == true>style="color:#f90606; font-weight: bold;"</#if> href="/task/${child.id}"><b>${child.name}</b></a></td>
                                                                         <td>${child.responsible.surname} ${child.responsible.firstName}</td>
                                                                         <td>${child.deadline}</td>
+                                                                        <td>${child.status}</td>
                                                                     </tr>
                                                                 </#list>
                                                                     </tbody>
@@ -141,7 +143,7 @@
                                                 </div>
                                                 </#if>
                                                 <hr />
-                                                <h4>Комментарии к задаче</h4>
+                                                <h4>Комментарии</h4>
                                                 <#if comments ??>
                                                 <#list comments as comment>
                                                 <div class="post" style="border-bottom: 1px solid #adb5bd;">
@@ -171,7 +173,7 @@
                                         <div class="row" style="margin-top: 20px;">
                                             <div class="col-md-12">
                                                 <h4>Написать комментарий</h4>
-                                                <form enctype="multipart/form-data" action="/task/comment" method="post">
+                                                <form enctype="multipart/form-data" action="/agreement/comment" method="post">
                                                     <div class="row">
                                                         <div class="col-md-12">
                                                             <textarea id="summernote" name="editordata"></textarea>
@@ -188,7 +190,7 @@
                                                                 <input type="file" name="file" multiple id="js-file" >
                                                                <!-- <label class="custom-file-label" for="customFile">Выбрать файлы</label>-->
                                                                 <input type="hidden" name="_csrf" value="${_csrf.token}" />
-                                                                <input type="hidden" name="task_id" value="${task.id}" />
+                                                                <input type="hidden" name="task_id" value="${agreement.id}" />
                                                             </div>
                                                         </div>
                                                         <div class="col-md-4">
@@ -204,53 +206,71 @@
                         </div>
                     </div>
                     <div class="col-md-3">
+                                <div class="card card-success card-outline">
+                                    <div class="card-body box-profile">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div >
+                                                    <h4 class="profile-username">Автор</h4>
+                                                </div>
+                                                <ul class="list-group list-group-unbordered list-unstyled mb-3">
+                                                        <li class="text-muted">
+                                                            <img style="width: 20px; padding-bottom: 5px;" src="../static/img/avatar.jpg" alt="image"> ${agreement.author.surname} ${agreement.author.firstName}</a>
+                                                        </li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div >
+                                                    <h4 class="profile-username">Ответственный</h4>
+                                                </div>
+                                                <ul class="list-group list-group-unbordered list-unstyled mb-3">
+                                                    <li class="text-muted">
+                                                        <img style="width: 20px; padding-bottom: 5px;" src="../static/img/avatar.jpg" alt="image"> </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <hr />
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div >
+                                                    <h4 class="profile-username">Дата начала</h4>
+                                                </div>
+                                                <ul class="list-group list-group-unbordered list-unstyled mb-3">
+                                                    <li class="text-muted">
+                                                         ${agreement.datecreate}
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div >
+                                                    <h4 class="profile-username">Дедлайн</h4>
+                                                </div>
+                                                <ul class="list-group list-group-unbordered list-unstyled mb-3">
+                                                    <li class="text-muted">
+                                                        ${agreement.deadline}
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
                         <div class="card card-success card-outline">
                             <div class="card-body box-profile">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div><h4 class="profile-username">Автор</h4></div>
-                                        <ul class="list-group list-group-unbordered list-unstyled mb-3">
-                                            <li class="text-muted"><img style="width: 20px; padding-bottom: 5px;" src="../static/img/avatar.jpg" alt="image"> ${task.author.surname} ${task.author.firstName}</a></li>
-                                        </ul>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div><h4 class="profile-username">Ответственный</h4></div>
-                                        <ul class="list-group list-group-unbordered list-unstyled mb-3">
-                                            <li class="text-muted"><img style="width: 20px; padding-bottom: 5px;" src="../static/img/avatar.jpg" alt="image"> ${task.responsible.surname} ${task.responsible.firstName}</a></li>
-                                        </ul>
-                                    </div>
+                                <div class="text-center">
+                                    <h4 class="profile-username text-center">Маршрут согласования</h4>
                                 </div>
-                                <hr />
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div><h4 class="profile-username">Дата начала</h4></div>
-                                        <ul class="list-group list-group-unbordered list-unstyled mb-3">
-                                            <li class="text-muted">${task.datecreate}</li>
-                                        </ul>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div><h4 class="profile-username">Деадлайн</h4></div>
-                                        <ul class="list-group list-group-unbordered list-unstyled mb-3">
-                                            <li class="text-muted">${task.deadline}</li>
-                                        </ul>
-                                    </div>
-                                </div>
+                                <ul class="list-group list-group-unbordered list-unstyled mb-3">
+                                    <#list sequence as seq>
+                                        <li class="text-muted">
+                                            <img style="width: 20px; padding-bottom: 5px;" src="../static/img/avatar.jpg" alt="image"> ${seq.user.surname} ${seq.user.firstName}</a>
+                                        </li>
+                                    </#list>
+                                </ul>
                             </div>
                         </div>
-                        <#if type??>
-                            <div class="card card-success card-outline">
-                                <div class="card-body box-profile">
-                                    <div class="text-center"><h4 class="profile-username text-center">Команда</h4></div>
-                                    <ul class="list-group list-group-unbordered list-unstyled mb-3">
-                                        <#list task.team as team>
-                                            <li class="text-muted">
-                                                <img style="width: 20px; padding-bottom: 5px;" src="../static/img/avatar.jpg" alt="image"> ${team.surname} ${team.firstName}</a>
-                                            </li>
-                                        </#list>
-                                    </ul>
-                                </div>
-                            </div>
-                        </#if>
                         <div class="card card-success card-outline">
                             <div class="card-body box-profile">
                                 <div class="text-center">
@@ -274,109 +294,44 @@
                     </div>
                 </div>
             </div>
-            <#if user.id == task.author.id>
+            <#if user.id == agreement.author.id>
             <div class="modal" tabindex="-1" role="dialog" id="myModal">
                 <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
                     <div class="modal-content">
                         <form action="/task/update" method="post">
                             <div class="modal-header">
-                                <h5 class="modal-title">Редактирование задачи</h5>
+                                <h5 class="modal-title">Редактирование согласования</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body">
                                 <div class="form-group">
-                                    <label for="exampleInputName">Название задачи</label>
-                                    <input type="text" name="name" class="form-control" id="exampleInputName" value="${task.name}">
+                                    <label for="exampleInputName">Название согласования</label>
+                                    <input type="text" name="name" class="form-control" id="exampleInputName" value="${agreement.name}">
                                 </div>
                                 <div class="form-group">
                                     <label for="exampleInputName">Описание</label>
-                                    <textarea id="summernote1" name="description" value="">${task.description}</textarea>
+                                    <textarea id="summernote1" name="description" value="">${(agreement.description)!""}</textarea>
                                 </div>
                                 <div class="form-group">
-                                    <label>Надпроект</label>
-                                    <select name="parent" class="select2bs4" style="width: 100%;">
-                                        <option value="0">-</option>
-                                        <#if projects ??>
-                                            <#list projects as project>
-                                                <#if task.parentP == project.id>
-                                                    <#assign selected="selected">
-                                                <#else>
-                                                    <#assign selected="">
-                                                </#if>
-                                                <option <#if selected == "selected">${selected}</#if> value="${project.id}">${project.name}</option>
-                                            </#list>
-                                        </#if>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Надзадача</label>
-                                    <select name="parentT" class="select2bs4" style="width: 100%;">
-                                        <option value="0">-</option>
-                                        <#if taskList ??>
-                                            <#list taskList as task>
-                                                <#if task.parentT == task.id>
-                                                    <#assign selected="selected">
-                                                <#else>
-                                                    <#assign selected="">
-                                                </#if>
-                                                <option <#if selected == "selected">${selected}</#if> value="${task.id}">${task.name} - ${task.author.firstName} ${task.author.surname}</option>
-                                            </#list>
-                                        </#if>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Ответственный</label>
-                                    <select name="responsible" class="select2bs4_1" style="width: 100%;">
-                                        <option value="0">-</option>
-                                        <#if userList ??>
-                                            <#list userList as usr>
-                                                <#if task.responsible.id == usr.id>
-                                                    <#assign selected1="selected">
-                                                <#else> <#assign selected1=" ">
-                                                </#if>
-                                                <#if usr.surname != "user">
-                                                    <option <#if selected1 == "selected">${selected1}</#if> value="${usr.id}">${usr.surname} ${usr.firstName}</option>
-                                                </#if>
-                                            </#list>
-                                        </#if>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Команда проекта</label>
+                                    <label>Маршрут</label>
                                     <select name="team" class="select2bs4" multiple="multiple" style="width: 100%;">
-                                        <#list userList as usr>
-                                            <#if usr.surname != "user">
-                                                <#if task.team ??>
-                                                    <#list task.team as one>
-                                                        <#if one.id == usr.id>
-                                                            <#assign selected="selected">
-                                                        </#if>
-                                                    </#list>
-                                                </#if>
-                                                <option <#if selected??>${selected}</#if> value="${usr.id}">${usr.surname} ${usr.firstName}</option>
+
+                                        <#list routeList as route>
+                                            <#if route.id == agreement.route.id>
+                                                <#assign selected="selected">
                                             </#if>
                                         </#list>
+                                        <option <#if selected??>${selected}</#if> value="${agreement.route.id}">${agreement.route.name} </option>
                                     </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Дата начала</label>
-                                    <input type="text" name="datecreate" value="${task.datecreate}" class="form-control datetimepicker-input" id="datetimepicker1" data-toggle="datetimepicker" data-target="#datetimepicker5"/>
                                 </div>
                                 <div class="form-group">
                                     <label>Дедлайн</label>
-                                    <input type="text" name="deadline" value="${task.deadline}" class="form-control datetimepicker-input" id="datetimepicker2" data-toggle="datetimepicker" data-target="#datetimepicker6"/>
-                                </div>
-                                <div class="form-group">
-                                    <label>Статус</label>
-                                    <select name="status" class="form-control">
-                                        <option >Активный</option>
-                                        <option >Архивный</option>
-                                    </select>
+                                    <input type="text" name="deadline" value="${agreement.deadline}" class="form-control datetimepicker-input" id="datetimepicker2" data-toggle="datetimepicker" data-target="#datetimepicker6"/>
                                 </div>
                                 <input type="hidden" name="_csrf" value="${_csrf.token}" />
-                                <input type="hidden" name="id" value="${task.id}" />
+                                <input type="hidden" name="id" value="${agreement.id}" />
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

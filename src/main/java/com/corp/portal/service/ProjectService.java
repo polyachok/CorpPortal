@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
@@ -31,6 +30,9 @@ public class ProjectService {
     @Autowired
     private TaskService taskService;
 
+    @Autowired
+    private MailService mailService;
+
     public boolean addProject(Project project, User user)  {
         if (project.getId() != null){
             return false;
@@ -45,6 +47,7 @@ public class ProjectService {
         project.setPath(fileService.createProjectPath(project, parent));
         project.setAuthor(user);
         projectRepo.save(project);
+        mailService.sendNewProjectMessage(project.getTeam(), project);
         return true;
     }
 
@@ -64,6 +67,7 @@ public class ProjectService {
         projectDb.setDescription(project.getDescription());
         projectDb.setTeam(project.getTeam());
         projectDb.setStatus(project.getStatus());
+        projectDb.setParent(project.getParent());
 
         projectRepo.save(projectDb);
         return true;

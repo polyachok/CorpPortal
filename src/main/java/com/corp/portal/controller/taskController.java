@@ -40,7 +40,7 @@ public class taskController {
     @GetMapping("/outgoing")
     public String taskOutList(Model model) throws ParseException {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        List taskList = taskService.findByAuthor((User) userDetails);
+        List taskList = taskService.findByAuthor((User) userDetails, Long.valueOf(0));
         if (taskList != null){
             model.addAttribute("tasks", taskList);
         }
@@ -51,7 +51,7 @@ public class taskController {
     @GetMapping("/incoming")
     public String taskInList(Model model) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        List taskList = taskService.findBuTeamOrResponsible((User) userDetails);
+        List taskList = taskService.findBuTeamOrResponsible((User) userDetails, Long.valueOf(0));
         if (taskList != null){
             model.addAttribute("tasks", taskList);
         }
@@ -79,13 +79,13 @@ public class taskController {
             @AuthenticationPrincipal User user,
             @RequestParam Map<String, String> form,
             Task task) throws ParseException {
-        taskService.createTask(user, task);
+        taskService.createTask(user, task, Long.valueOf(0));
         return "redirect:/task/outgoing";
     }
 
 
     @GetMapping("{task}")
-    public String taskInfo(@PathVariable Task task, Model model){
+    public String taskInfo(@RequestParam(required = false) String action, @PathVariable Task task, Model model){
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = (User) userDetails;
         List<Task> childList = taskService.getByParentTask(task);
@@ -104,8 +104,25 @@ public class taskController {
             List userList = userService.findAll();
             model.addAttribute("userList",userList);
             model.addAttribute("task",task);
+            model.addAttribute("author", true);
         }
+        if (action != null){
+            taskService.setTaskStatus(task,action);
+        }
+        if (task.getType() == 0){
+            model.addAttribute("type", "task");
+        }
+        List<Task> taskList = taskService.findByAuthorOrTeamOrResponsible(user);
+        model.addAttribute("taskList", taskList);
+        int taskAction = taskService.getTaskAction(task, user);
+        model.addAttribute("taskAction", taskAction);
         return "taskInfo";
+    }
+
+    @PostMapping("update")
+    public String updateTask(Task task){
+        taskService.updateTask(task);
+        return "redirect:/task/"+task.getId();
     }
 
     @PostMapping("comment")

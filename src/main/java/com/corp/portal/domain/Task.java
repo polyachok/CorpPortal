@@ -19,6 +19,8 @@ public class Task extends AbstractProject {
 
     private Long parentT;
 
+    private Long parentA;
+
     @ManyToMany
     @JoinTable(
             name = "task_team",
@@ -36,6 +38,26 @@ public class Task extends AbstractProject {
     private List<TComment> comment = new ArrayList<>();
 
     private boolean deadLineStatus;
+
+    private boolean closed;
+
+    private Long type;
+
+    public Long getType() {
+        return type;
+    }
+
+    public void setType(Long type) {
+        this.type = type;
+    }
+
+    public boolean isClosed() {
+        return closed;
+    }
+
+    public void setClosed(boolean closed) {
+        this.closed = closed;
+    }
 
     public boolean isDeadLineStatus() {
         return deadLineStatus;
@@ -93,5 +115,11 @@ public class Task extends AbstractProject {
         this.comment = comment;
     }
 
+    public Long getParentA() {
+        return parentA;
+    }
 
+    public void setParentA(Long parentA) {
+        this.parentA = parentA;
+    }
 }

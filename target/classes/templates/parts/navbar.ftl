@@ -88,6 +88,32 @@
                         </p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-copy"></i>
+                        <p>
+                            Мои согласования
+                            <i class="fas fa-angle-left right"></i>
+                            <span class="badge badge-warning right">2</span>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/agreement/incoming" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Входящие</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/agreement/outgoing" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Исходящие</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
             </ul>
         </nav>
     </div>

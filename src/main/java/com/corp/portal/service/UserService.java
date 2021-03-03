@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.mail.MessagingException;
 import java.util.*;
 
 @Service
@@ -59,7 +60,9 @@ public class UserService implements UserDetailsService {
                     user.getUsername(),
                     user.getActivationCode()
             );
-            mailSender.send(user.getEmail(), "Activate code",message);
+
+                mailSender.send(user.getEmail(), "Activate code",message);
+
         }
     }
 
