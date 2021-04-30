@@ -18,6 +18,24 @@ public class Sequence {
     @JoinColumn(name = "usr", nullable = false)
     private User usr ;
 
+    private Integer deadline;
+
+    public User getUsr() {
+        return usr;
+    }
+
+    public void setUsr(User usr) {
+        this.usr = usr;
+    }
+
+    public Integer getDeadline() {
+        return deadline;
+    }
+
+    public void setDeadline(Integer deadline) {
+        this.deadline = deadline;
+    }
+
     public Long getId() {
         return id;
     }

@@ -10,7 +10,7 @@ import java.util.List;
 public interface AgreementRepo extends CrudRepository<Agreement, Long> {
 
     List findByAuthor(User author);
-
+    List findByParentTAndAuthorOrResponsible(Long parent, User author, User responsible);
 
 }
 

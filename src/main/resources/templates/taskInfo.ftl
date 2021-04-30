@@ -22,18 +22,19 @@
     <#include "parts/top_navbar.ftl">
     <#include "parts/navbar.ftl">
     <div class="content-wrapper">
-      <!--<section class="content-header">
+        <#if parent??>
+        <section class="content-header">
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-sm-12">
                         <ol class="breadcrumb float-sm-left">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">Inline Charts</li>
+                            <li class="breadcrumb-item"><a href=<#if parentT ??>"task/"<#else>"../project/"${parent.id}</#if> class="link-black text-lg"><i class="far fa-folder-open"></i> ${parent.name}</a></li>
                         </ol>
                     </div>
                 </div>
             </div>
-        </section>-->
+        </section>
+        </#if>
         <section class="content">
             <div class="container-fluid" style="padding-top: 15px;">
             <!-- Default box -->
@@ -48,53 +49,56 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-md-8">
-                                                <h5>Статус задачи - ${task.status}</h5>
+                                            <div class="col-md-4">
+                                                <h6>Статус задачи - ${task.status}</h6>
                                             </div>
-                                                <#if taskAction != 0>
-                                                    <#switch taskAction>
-                                                        <#case 1>
-                                                        <div class="col-md-2">
-                                                        </div>
-                                                         <div class="col-md-2">
-                                                             <a class="btn btn-outline-success" href="/task/${task.id}?action=close">Завершить</a>
-                                                         </div>
-                                                             <#break>
-                                                        <#case 2>
-                                                        <div class="col-md-2">
-                                                        </div>
-                                                        <div class="col-md-2">
-                                                            <a class="btn btn-outline-warning" href="/task/${task.id}?action=begin">Начать</a>
-                                                        </div>
-                                                            <#break>
-                                                        <#case 3>
-                                                        <div class="col-md-2">
-                                                            <a class="btn btn-outline-success" href="/task/${task.id}?action=accept">Принять</a>
-                                                        </div>
-                                                        <div class="col-md-2">
-                                                            <a class="btn btn-outline-danger" href="/task/${task.id}?action=deny">Отказать</a>
-                                                        </div>
-                                                            <#break>
-                                                        <#case 5>
-                                                        <div class="col-md-2">
-                                                            <a class="btn btn-outline-success" href="/task/${task.id}?action=accept">Принять</a>
-                                                        </div>
-                                                        <div class="col-md-2">
-                                                            <a class="btn btn-outline-danger" href="/task/${task.id}?action=deny">Отказать</a>
-                                                        </div>
-                                                        <#break>
-                                                        <#case 8>
-                                                            <div class="col-md-2">
-                                                            </div>
-                                                            <div class="col-md-2">
-                                                                <a class="btn btn-outline-danger" href="/task/${task.id}?action=complete">Завершить</a>
-                                                            </div>
-                                                            <#break>
-                                                        <#default>
-                                                    </#switch>
-                                                </#if>
+                                            <div class="col-md-8">
+                                                <div class="float-right">
+                                                    <#if task.type == 0>
+                                                        <#if taskAction != 0>
+                                                            <#switch taskAction>
+                                                                <#case 1>
+                                                                        <a class="btn btn-outline-success" href="/task/${task.id}?action=close">Завершить</a>
+                                                                    <#break>
+                                                                <#case 2>
+                                                                        <a class="btn btn-outline-warning" href="/task/${task.id}?action=begin">Начать</a>
+                                                                    <#break>
+                                                                <#case 3>
+                                                                        <a class="btn btn-outline-success" href="/task/${task.id}?action=accept">Принять</a>
+                                                                        <a class="btn btn-outline-danger" href="/task/${task.id}?action=deny">Отказать</a>
+                                                                    <#break>
+                                                                <#case 5>
+                                                                        <a class="btn btn-outline-success" href="/task/${task.id}?action=accept">Принять</a>
+                                                                        <a class="btn btn-outline-danger" href="/task/${task.id}?action=deny">Отказать</a>
+                                                                    <#break>
+                                                                <#case 8>
+                                                                        <a class="btn btn-outline-danger" href="/task/${task.id}?action=complete">Завершить</a>
+                                                                    <#break>
+                                                                <#default>
+                                                            </#switch>
+                                                        </#if>
+                                                    </#if>
+                                                    <#if task.type == 1>
+                                                        <#if taskAction != 0>
+                                                            <#switch taskAction>
+                                                                <#case 9>
+                                                                        <a class="btn btn-outline-success" href="" data-toggle="modal" data-target="#myModal2">Согласовать</a>
+                                                                    <#break>
+                                                                <#default>
+                                                            </#switch>
+                                                        </#if>
+                                                    </#if>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
+                                <div class="post">
+                                <div class="row">
+                                    <div class="col-12 col-sm-12">
+                                        <h5>${(task.goal)!""}</h5>
+                                    </div>
+                                </div>
+                                </div>
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="row">
@@ -105,40 +109,119 @@
                                         <hr />
                                         <div class="row">
                                             <div class="col-12">
+                                                <#if task.type == 0>
                                                 <#if childTask ??>
-                                                <div id="accordion">
-                                                    <div class="card card-success card-outline">
-                                                        <a class="d-block w-100 collapsed" data-toggle="collapse" href="#collapseOne">
-                                                            <div class="card-header">
-                                                                <h4 class="card-title w-100">
-                                                                   Вложенные задачи
-                                                                </h4>
-                                                            </div>
-                                                        </a>
-                                                        <div id="collapseOne" class="collapse show" data-parent="#accordion">
-                                                            <div class="card-body">
-                                                                <table class="table table-sm text-nowrap table-borderless table-hover">
-                                                                    <thead>
-                                                                    <tr style="font: status-bar;">
-                                                                        <th>Название</th>
-                                                                        <th>Автор</th>
-                                                                        <th>Дедлайн</th>
-                                                                    </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                <#list childTask as child>
-                                                                    <tr <#if child.deadLineStatus == true>style="color:#f90606; font-weight: bold;"</#if>>
-                                                                        <td><a <#if child.deadLineStatus == true>style="color:#f90606; font-weight: bold;"</#if> href="/task/${child.id}"><b>${child.name}</b></a></td>
-                                                                        <td>${child.responsible.surname} ${child.responsible.firstName}</td>
-                                                                        <td>${child.deadline}</td>
-                                                                    </tr>
-                                                                </#list>
-                                                                    </tbody>
-                                                                </table>
+                                                    <div id="accordion">
+                                                        <div class="card card-success card-outline">
+                                                            <a class="d-block w-100 collapsed" data-toggle="collapse" href="#collapseOne">
+                                                                <div class="card-header">
+                                                                    <h4 class="card-title w-100">
+                                                                        Вложенные задачи
+                                                                    </h4>
+                                                                </div>
+                                                            </a>
+                                                            <div id="collapseOne" class="collapse show" data-parent="#accordion">
+                                                                <div class="card-body">
+                                                                    <table class="table table-sm text-nowrap table-borderless table-hover">
+                                                                        <thead>
+                                                                        <tr style="font: status-bar;">
+                                                                            <th>Название</th>
+                                                                            <th>Автор</th>
+                                                                            <th>Срок исполнения</th>
+                                                                        </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        <#list childTask as child>
+                                                                            <tr <#if child.deadLineStatus == true>style="color:#f90606; font-weight: bold;"</#if>>
+                                                                                <td><a <#if child.deadLineStatus == true>style="color:#f90606; font-weight: bold;"</#if> href="/task/${child.id}"><b>${child.name}</b></a></td>
+                                                                                <td>${child.responsible.surname} ${child.responsible.firstName}</td>
+                                                                                <td>${child.deadline}</td>
+                                                                            </tr>
+                                                                        </#list>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </#if>
+                                                    <#if childAg ??>
+                                                        <div id="accordion">
+                                                            <div class="card card-success card-outline">
+                                                                <a class="d-block w-100 collapsed" data-toggle="collapse" href="#collapseOne">
+                                                                    <div class="card-header">
+                                                                        <h4 class="card-title w-100">
+                                                                            Вложенные согласования
+                                                                        </h4>
+                                                                    </div>
+                                                                </a>
+                                                                <div id="collapseOne" class="collapse show" data-parent="#accordion">
+                                                                    <div class="card-body">
+                                                                        <table class="table table-sm text-nowrap table-borderless table-hover">
+                                                                            <thead>
+                                                                            <tr style="font: status-bar;">
+                                                                                <th>Название</th>
+                                                                                <th>Автор</th>
+                                                                                <th>Срок исполнения</th>
+                                                                            </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                            <#list childAg as child>
+                                                                                <tr style="font-weight: bold;">
+                                                                                    <td><a href="/agreement/${child.id}"><b>${child.name}</b></a></td>
+                                                                                    <td>${child.author.surname} ${child.author.firstName}</td>
+                                                                                    <td>${child.deadline}</td>
+                                                                                </tr>
+                                                                            </#list>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </#if>
+                                                </#if>
+                                                <#if parentCommentList ??>
+                                                    <#list parentCommentList as t>
+                                                        <#if t.id != task.id>
+                                                            <div id="accordion">
+                                                                <div class="card card-success card-outline">
+                                                                    <a class="d-block w-100 collapsed" data-toggle="collapse" href="#collapse${t.id}">
+                                                                        <div class="card-header">
+                                                                            <h4 class="card-title w-100">
+                                                                                ${t.name} &ensp;&mdash;&ensp; ${t.status} &ensp; ${t.responsible.surname} ${t.responsible.firstName} &ensp; ${(t.dateclose)!""}
+                                                                            </h4>
+                                                                        </div>
+                                                                    </a>
+                                                                    <div id="collapse${t.id}" class="collapse" data-parent="#accordion">
+                                                                        <div class="card-body">
+                                                                            <#list t.comment as comment>
+                                                                            <div class="post" style="border-bottom: 1px solid #adb5bd;">
+                                                                                <div class="user-block">
+                                                                                    <img class="img-circle img-bordered-sm" src="../static/img/avatar.jpg" alt="user image">
+                                                                                    <span class="username"><a href="#">${comment.author.surname} ${comment.author.firstName}</a></span>
+                                                                                    <span class="description">${comment.datecreate}</span>
+                                                                                </div>
+                                                                                <!-- /.user-block -->
+                                                                                <div class="click2edit">
+                                                                                    ${comment.description}
+                                                                                </div>
+                                                                                <p>
+                                                                                    <#if comment.file??>
+                                                                                        <#list comment.file as file>
+                                                                                            <a href="/task/file/${file.name}?id=${file.id}" class="link-black text-sm"><i class="fas fa-link mr-1"></i> ${file.name}</a>
+                                                                                        </#list>
+                                                                                    </#if>
+                                                                                </p>
+                                                                            </div>
+                                                                            </#list>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </#if>
+                                                    </#list>
                                                 </#if>
                                                 <hr />
                                                 <h4>Комментарии к задаче</h4>
@@ -186,7 +269,6 @@
                                                         <div class="col-md-8">
                                                             <div class="custom-file" style="margin-top: 10px;">
                                                                 <input type="file" name="file" multiple id="js-file" >
-                                                               <!-- <label class="custom-file-label" for="customFile">Выбрать файлы</label>-->
                                                                 <input type="hidden" name="_csrf" value="${_csrf.token}" />
                                                                 <input type="hidden" name="task_id" value="${task.id}" />
                                                             </div>
@@ -206,69 +288,73 @@
                     <div class="col-md-3">
                         <div class="card card-success card-outline">
                             <div class="card-body box-profile">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div><h4 class="profile-username">Автор</h4></div>
-                                        <ul class="list-group list-group-unbordered list-unstyled mb-3">
-                                            <li class="text-muted"><img style="width: 20px; padding-bottom: 5px;" src="../static/img/avatar.jpg" alt="image"> ${task.author.surname} ${task.author.firstName}</a></li>
-                                        </ul>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div><h4 class="profile-username">Ответственный</h4></div>
-                                        <ul class="list-group list-group-unbordered list-unstyled mb-3">
-                                            <li class="text-muted"><img style="width: 20px; padding-bottom: 5px;" src="../static/img/avatar.jpg" alt="image"> ${task.responsible.surname} ${task.responsible.firstName}</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <hr />
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div><h4 class="profile-username">Дата начала</h4></div>
-                                        <ul class="list-group list-group-unbordered list-unstyled mb-3">
-                                            <li class="text-muted">${task.datecreate}</li>
-                                        </ul>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div><h4 class="profile-username">Деадлайн</h4></div>
-                                        <ul class="list-group list-group-unbordered list-unstyled mb-3">
-                                            <li class="text-muted">${task.deadline}</li>
-                                        </ul>
-                                    </div>
-                                </div>
+                                <dl class="row">
+                                    <dt class="col-sm-6">Автор</dt>
+                                    <dd class="col-sm-6">${task.author.surname} ${task.author.firstName}</dd>
+                                    <dt class="col-sm-6">Ответственный</dt>
+                                    <dd class="col-sm-6">${task.responsible.surname} ${task.responsible.firstName}</dd>
+                                    <dt class="col-sm-6">Дата начала</dt>
+                                    <dd class="col-sm-6">${task.datecreate}</dd>
+                                    <dt class="col-sm-6">Срок исполнения</dt>
+                                    <dd class="col-sm-6">${task.deadline}</dd>
+                                </dl>
                             </div>
                         </div>
-                        <#if type??>
+                        <#if type == "task">
                             <div class="card card-success card-outline">
                                 <div class="card-body box-profile">
-                                    <div class="text-center"><h4 class="profile-username text-center">Команда</h4></div>
-                                    <ul class="list-group list-group-unbordered list-unstyled mb-3">
+                                    <dl>
+                                        <dt>Команда</dt>
                                         <#list task.team as team>
-                                            <li class="text-muted">
-                                                <img style="width: 20px; padding-bottom: 5px;" src="../static/img/avatar.jpg" alt="image"> ${team.surname} ${team.firstName}</a>
-                                            </li>
+                                            <dd>${team.surname} ${team.firstName}</dd>
                                         </#list>
-                                    </ul>
+                                    </dl>
                                 </div>
                             </div>
                         </#if>
                         <div class="card card-success card-outline">
                             <div class="card-body box-profile">
-                                <div class="text-center">
-                                    <h4 class="profile-username text-center">Файлы</h4>
-                                </div>
-                                <ul class="list-group list-group-unbordered list-unstyled mb-3">
-                                    <#if comments ??>
-                                        <#list comments as comment>
-                                            <#if comment.file??>
-                                                <#list comment.file as file>
-                                                    <li>
-                                                        <a href="/task/file/${file.name}?id=${file.id}" class="class="btn-link text-secondary""><i class="far fa-file"></i> ${file.name}</a>
-                                                    </li>
+                                <dl>
+                                    <dt>Файлы</dt>
+                                    <dd>
+                                        <#if task.type == 0>
+                                            <#if comments ??>
+                                                <#list comments as comment>
+                                                    <#if comment.file??>
+                                                        <#list comment.file as file>
+                                                            <a href="/task/file/${file.name}?id=${file.id}" class="link-black text-sm"><i class="far fa-file"></i> ${file.name}</a>
+                                                            <p class="text-muted text-xs">${file.datecreate}&emsp; ${file.author.firstName} ${file.author.surname}</p>
+                                                        </#list>
+                                                    </#if>
                                                 </#list>
                                             </#if>
-                                        </#list>
-                                    </#if>
-                                </ul>
+                                        </#if>
+                                    </dd>
+                                    <dd>
+                                        <#if parentFileList ??>
+                                            <#list parentFileList as comment>
+                                                <#if comment.file??>
+                                                    <#list comment.file as file>
+                                                        <div style="padding: 0.2rem;">
+                                                            <a href="/task/file/${file.name}?id=${file.id}" class="link-black text-sm"><i class="far fa-file"></i> ${file.name}</a>
+                                                            <p class="text-muted text-xs">${file.datecreate}&emsp; ${file.author.firstName} ${file.author.surname}</p>
+                                                        </div>
+                                                    </#list>
+                                                </#if>
+                                            </#list>
+                                        </#if>
+                                    </dd>
+                                    <dd>
+                                        <#if type == "agTask">
+                                            <#list files as file>
+                                                <div style="padding: 0.2rem;">
+                                                    <a href="/task/file/${file.name}?id=${file.id}&type=0" class="link-black text-sm"><i class="far fa-file"></i> ${file.name}</a>
+                                                    <p class="text-muted text-xs">${file.datecreate} &emsp; ${file.author.firstName} ${file.author.surname}</p>
+                                                </div>
+                                            </#list>
+                                        </#if>
+                                    </dd>
+                                </dl>
                             </div>
                         </div>
                     </div>
@@ -387,6 +473,31 @@
                 </div>
             </div>
             </#if>
+            <div class="modal" tabindex="-1" role="dialog" id="myModal2">
+                <form action="/task/approve" method="POST">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Комментарий к согласованию</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <textarea class="form-control" name="agComment" value="Напишите комментарий к согласованию"></textarea>
+                            </div>
+                            <div class="modal-footer">
+                                <input type="hidden" name="_csrf" value="${_csrf.token}" />
+                                <input type="hidden" name="id" value="${task.id}" />
+                                <input type="hidden" name="action" value="approve" />
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                                <button type="submit" class="btn btn-primary">Сохранить</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
         </section>
     </div>
 </div>
@@ -412,6 +523,10 @@
 
 <script>
     $('#myModal1').on('shown.bs.modal', function () {
+        $('#myInput').trigger('focus')
+    })
+
+    $('#myModal2').on('shown.bs.modal', function () {
         $('#myInput').trigger('focus')
     })
 

@@ -21,6 +21,17 @@
                                     <textarea id="summernote" name="description"></textarea>
                                 </div>
                                 <div class="form-group">
+                                    <label>Надзадача</label>
+                                    <select name="parentT" class="select2bs4" style="width: 100%;">
+                                        <option value="0">-</option>
+                                        <#if taskList ??>
+                                            <#list taskList as task>
+                                                <option value="${task.id}">${task.name} - ${task.author.firstName} ${task.author.surname}</option>
+                                            </#list>
+                                        </#if>
+                                    </select>
+                                </div>
+                                <div class="form-group">
                                     <label>Маршрут согласования</label>
                                     <select name="route" class="select2bs4" style="width: 100%;">
                                         <option value="0">-</option>
@@ -32,8 +43,17 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label>Дедлайн</label>
-                                    <input type="text" name="deadline" class="form-control datetimepicker-input" id="datetimepicker6" data-toggle="datetimepicker" data-target="#datetimepicker6"/>
+                                    <label>Ответственный</label>
+                                    <select name="responsible" class="select2bs4" style="width: 100%;">
+                                        <option value="0">-</option>
+                                        <#if userList ??>
+                                            <#list userList as usr>
+                                                <#if usr.surname != "user">
+                                                    <option value="${usr.id}">${usr.surname} ${usr.firstName}</option>
+                                                </#if>
+                                            </#list>
+                                        </#if>
+                                    </select>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12" id="result">

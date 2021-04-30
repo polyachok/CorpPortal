@@ -24,6 +24,7 @@
                                         <th>Дата начала</th>
                                         <th>Дедлайн</th>
                                         <th>Статус</th>
+                                        <th>Активность</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -34,6 +35,7 @@
                                             <td>${ag.datecreate}</td>
                                             <td>${ag.deadline}</td>
                                             <td>${ag.status}</td>
+                                            <td>${(ag.lastActive)!""}</td>
                                         </tr>
                                     </#list>
                                     </#if>

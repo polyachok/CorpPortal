@@ -1,5 +1,6 @@
 package com.corp.portal.service;
 
+import com.corp.portal.domain.Agreement;
 import com.corp.portal.domain.Project;
 import com.corp.portal.domain.Task;
 import com.corp.portal.domain.User;
@@ -13,6 +14,17 @@ import java.util.Set;
 public class MailService {
     @Autowired
     private MailSender mailSender;
+
+    public void sendNewUserMessage(User user) {
+        if (!StringUtils.isEmpty(user.getEmail())){
+            String message = String.format(
+                    "%s %s! Приветствуем вас как нового пользователя системы! ",
+                    user.getFirstName(),
+                    user.getSurname()
+            );
+            mailSender.send(user.getEmail(), "Activate code",message);
+        }
+    }
 
     public void sendNewProjectMessage(Set<User> userList, Project project) {
         for (User user : userList){
@@ -66,5 +78,47 @@ public class MailService {
             );
             mailSender.send(responsible.getEmail(), "Новая задача", message);
         }
+    }
+
+    public void sendAgreementNextStage(Task agTask){
+        String message = String.format(
+                "Добрый День %s %s !\n" +
+                        "Пользователь %s %s создал согласование \"%s\"!\n" +
+                        "Вам необходимо принять участие в согласование!\n" +
+                        "Срок вашего согласования %s",
+                agTask.getResponsible().getFirstName(),
+                agTask.getResponsible().getSurname(),
+                agTask.getAuthor().getFirstName(),
+                agTask.getAuthor().getSurname(),
+                agTask.getName(),
+                agTask.getDeadline()
+        );
+        mailSender.send(agTask.getResponsible().getEmail(), "Новое согласование", message);
+    }
+
+    public void sendAgreementStageAgreed(Task agTask){
+        String message = String.format(
+                "Добрый День %s %s !\n" +
+                        "Пользователь %s %s согласовал задачу \"%s\"!",
+
+                agTask.getAuthor().getFirstName(),
+                agTask.getAuthor().getSurname(),
+                agTask.getResponsible().getFirstName(),
+                agTask.getResponsible().getSurname(),
+                agTask.getName()
+
+        );
+        mailSender.send(agTask.getAuthor().getEmail(), "Задача согласована", message);
+    }
+
+    public void sendAgAuthorApprove(Agreement agreement) {
+        String mesage = String.format(
+                "Добрый День! \n" +
+                "\"%s\" согласовано всеми пользователями!",
+
+                agreement.getName()
+        );
+        mailSender.send(agreement.getAuthor().getEmail(), "Согласование завершено", mesage);
+        mailSender.send(agreement.getResponsible().getEmail(), "Согласование завершено", mesage);
     }
 }

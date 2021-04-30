@@ -9,4 +9,5 @@ import java.util.List;
 public interface TCommentRepo extends CrudRepository<TComment, Long> {
     List findByParent(Long id, Sort sort);
     List findByParentOrderByDatecreateAsc(Long id);
+    //List<TComment> findByParentOrderByDatecreateAsc(Long id);
 }

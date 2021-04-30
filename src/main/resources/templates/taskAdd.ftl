@@ -17,6 +17,10 @@
                                     <input type="text" name="name" class="form-control" id="exampleInputName" placeholder="Название">
                                 </div>
                                 <div class="form-group">
+                                    <label for="exampleInputName">Цель задачи</label>
+                                    <input type="text" name="goal" class="form-control" id="exampleInputName" placeholder="Цель задачи">
+                                </div>
+                                <div class="form-group">
                                     <label for="exampleInputName">Описание</label>
                                     <textarea id="summernote" name="description"></textarea>
                                 </div>
@@ -72,7 +76,7 @@
                                     <input type="text" name="datecreate" class="form-control datetimepicker-input" id="datetimepicker5" data-toggle="datetimepicker" data-target="#datetimepicker5"/>
                                 </div>
                                 <div class="form-group">
-                                    <label>Дедлайн</label>
+                                    <label>Срок исполнения</label>
                                     <input type="text" name="deadline" class="form-control datetimepicker-input" id="datetimepicker6" data-toggle="datetimepicker" data-target="#datetimepicker6"/>
                                 </div>
 

@@ -101,7 +101,7 @@ public class FileService {
                }
                createPath(dir);
 
-               return fullDir + "\\" + generateName;
+               return fullDir + "//" + generateName;
            } catch (ParseException e) {
                System.out.println(e);
            }
@@ -114,13 +114,12 @@ public class FileService {
         if (!dir.exists()){
             boolean create = dir.mkdir();
             if (create){
+                System.out.println(create);
                 return true;
             }
         }
         return false;
     }
-
-
 
     public Config getConfig(String configName){
         return  configRepo.findByConfigname(configName);

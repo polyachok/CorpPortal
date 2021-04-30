@@ -45,4 +45,8 @@ public class AgFileService {
     }
         return true;
     }
+
+    public AgFile findById(Long id) {
+        return fileRepo.findById(id).get();
+    }
 }

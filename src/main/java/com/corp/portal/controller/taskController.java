@@ -1,9 +1,6 @@
 package com.corp.portal.controller;
 
-import com.corp.portal.domain.TComment;
-import com.corp.portal.domain.TaCoFile;
-import com.corp.portal.domain.Task;
-import com.corp.portal.domain.User;
+import com.corp.portal.domain.*;
 import com.corp.portal.service.TCommentService;
 import com.corp.portal.service.TaskService;
 import com.corp.portal.service.UserService;
@@ -101,8 +98,7 @@ public class taskController {
             if (projectList != null) {
                 model.addAttribute("projects", projectList);
             }
-            List userList = userService.findAll();
-            model.addAttribute("userList",userList);
+            model.addAttribute("userList",userService.findAll());
             model.addAttribute("task",task);
             model.addAttribute("author", true);
         }
@@ -111,11 +107,26 @@ public class taskController {
         }
         if (task.getType() == 0){
             model.addAttribute("type", "task");
+        }else {
+            model.addAttribute("type", "agTask");
+            model.addAttribute("files", taskService.getAgListFile(task));
+            if (task.getParentT() != 0){
+                model.addAttribute("parentFileList", taskService.getAgTaskFile(task));
+                model.addAttribute("parentCommentList", taskService.getAgTaskComment(task));
+                model.addAttribute("parentAgTask",taskService.findById(task.getParentT()));
+            }
         }
-        List<Task> taskList = taskService.findByAuthorOrTeamOrResponsible(user);
-        model.addAttribute("taskList", taskList);
-        int taskAction = taskService.getTaskAction(task, user);
-        model.addAttribute("taskAction", taskAction);
+        if (task.getType() != 1){
+            if (task.getParentT() != 0) {
+                model.addAttribute("parentT", true);
+            }
+            model.addAttribute("parent", taskService.findParent(task));
+        }
+        if (taskService.findAgreementByAuthorOrResponsible(task, user) != null){
+            model.addAttribute("childAg", taskService.findAgreementByAuthorOrResponsible(task, user));
+        }
+        model.addAttribute("taskList", taskService.findByAuthorOrTeamOrResponsible(user));
+        model.addAttribute("taskAction", taskService.getTaskAction(task, user));
         return "taskInfo";
     }
 
@@ -123,6 +134,12 @@ public class taskController {
     public String updateTask(Task task){
         taskService.updateTask(task);
         return "redirect:/task/"+task.getId();
+    }
+
+    @PostMapping("approve")
+    public String approve(@RequestParam Map<String,String> form){
+        taskService.setApprove(Long.valueOf(form.get("id")), form.get("agComment"));
+        return "redirect:/agreement/incoming";
     }
 
     @PostMapping("comment")
@@ -152,21 +169,17 @@ public class taskController {
     @GetMapping("/file/{file_name}")
     public void getFile(@PathVariable("file_name") String fileName,
                         @RequestParam("id") String fileId,
+                        @RequestParam(value= "type", required = false) Integer t,
                         HttpServletResponse response
-    ) throws IOException {
-        TaCoFile fileDb = taskService.getFile(fileId);
-        String filePath = fileDb.getPath() + "/" + fileDb.getName();
-        Path file = Paths.get(filePath);
-        String type = Files.probeContentType(file);
-        response.setContentType(type);
-        response.setHeader("Content-disposition", "attachment; filename=" + fileName);
-
-        try {
-            Files.copy(file, response.getOutputStream());
-            response.getOutputStream().flush();
-        } catch (IOException e){
-
+    )  {
+        if (t != null && t == 1){
+            AgFile fileDb = taskService.getAgFile(fileId);
+            taskService.downloadFile(fileDb.getPath(),fileDb.getName(),response);
+        }else {
+            TaCoFile fileDb = taskService.getFile(fileId);
+            taskService.downloadFile(fileDb.getPath(),fileDb.getName(),response);
         }
+
     }
 
 

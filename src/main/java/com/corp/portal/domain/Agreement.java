@@ -7,6 +7,10 @@ import java.util.List;
 public class Agreement extends AbstractProject{
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "responsible")
+    private User responsible;
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "route")
     private Route route;
 
@@ -16,6 +20,24 @@ public class Agreement extends AbstractProject{
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "agreement")
     private List<AgFile> file;
+
+    private Long parentT;
+
+    public User getResponsible() {
+        return responsible;
+    }
+
+    public void setResponsible(User responsible) {
+        this.responsible = responsible;
+    }
+
+    public Long getParentT() {
+        return parentT;
+    }
+
+    public void setParentT(Long parentT) {
+        this.parentT = parentT;
+    }
 
     public List<AgFile> getFile() {
         return file;

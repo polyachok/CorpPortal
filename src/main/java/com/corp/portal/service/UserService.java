@@ -20,7 +20,7 @@ public class UserService implements UserDetailsService {
     private UserRepo userRepo;
 
     @Autowired
-    private MailSender mailSender;
+    private MailService mailService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -37,34 +37,19 @@ public class UserService implements UserDetailsService {
 
     public boolean addUser(User user){
         User userFromDb = userRepo.findByUsername(user.getUsername());
-        System.out.println(user.getPassword());
         if (userFromDb != null){
             return false;
         }
         user.setActive(true);
         user.setRoles(Collections.singleton(Role.USER));
-        user.setActivationCode(UUID.randomUUID().toString());
+        //user.setActivationCode(UUID.randomUUID().toString());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepo.save(user);
-
-
-        sendActivateMessage(user);
+        mailService.sendNewUserMessage(user);
         return true;
     }
 
-    private void sendActivateMessage(User user) {
-        if (!StringUtils.isEmpty(user.getEmail())){
-            String message = String.format(
-                 "Hello, %s! \n" +
-                         "Welcome to Corp Portal. Please, visit next link: http://localhost:8080/activate/%s",
-                    user.getUsername(),
-                    user.getActivationCode()
-            );
 
-                mailSender.send(user.getEmail(), "Activate code",message);
-
-        }
-    }
 
     public boolean activateUser(String code) {
         User user = userRepo.findByActivationCode(code);

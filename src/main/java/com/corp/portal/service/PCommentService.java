@@ -28,7 +28,6 @@ public class PCommentService {
 
     public Project addComment(User user, Map<String, String> form, MultipartFile[] file) throws IOException {
         PComment comment = new PComment();
-        String uploadPath = "D:/Разработка/upload";
 
         Project project = projectRepo.findById(Long.parseLong(form.get("project_id"))).get();
 
@@ -42,7 +41,7 @@ public class PCommentService {
             PComment commentDb = pCommentRepo.findById(comment.getId()).get();
 
             if (!file[0].getOriginalFilename().isEmpty()){
-                fileService.addFile(uploadPath,file,user,commentDb);
+                fileService.addFile(project.getPath(),file,user,commentDb);
             }
             projectRepo.save(project);
 

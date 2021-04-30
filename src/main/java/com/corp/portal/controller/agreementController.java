@@ -14,7 +14,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -42,8 +43,10 @@ public class agreementController {
     }
 
     @GetMapping("/add")
-    public String agAdd(Model model){
+    public String agAdd(@AuthenticationPrincipal User user, Model model){
         model.addAttribute("route", agreementService.getRouteList());
+        model.addAttribute("taskList", agreementService.findTask(user));
+        model.addAttribute("userList", agreementService.findAllUser());
         return "agAdd";
     }
 
@@ -56,7 +59,7 @@ public class agreementController {
         return "redirect:/agreement/outgoing";
     }
 
-    @GetMapping("/out/{agreement}")
+    @GetMapping("{agreement}")
     public String agOutInfo(@RequestParam(required = false) String action,
                          @PathVariable("agreement") Long id,
                          Model model){
@@ -66,10 +69,13 @@ public class agreementController {
        model.addAttribute("routeList", agreementService.getRouteList());
        model.addAttribute("agAction", 0);
        model.addAttribute("agTask", agreementService.findByAgreement(agreement));
+       if (agreementService.getParentTask(agreement) != null) {
+           model.addAttribute("parent", agreementService.getParentTask(agreement));
+       }
         return "agInfo";
     }
 
-    @GetMapping("{agTask}")
+    @GetMapping("/in/{agTask}")
     public String agInInfo(@RequestParam(required = false) String action,
                          @PathVariable("agTask") Long id,
                          Model model){
@@ -89,6 +95,13 @@ public class agreementController {
             fileName.add("&emsp;");
         }
         return fileName;
+    }
+
+    @GetMapping("fileApprove")
+    public void approveFile(@RequestParam("agreement") String agreement,
+                              HttpServletResponse response){
+        String fileName = agreementService.createPdfFile(Long.valueOf(agreement));
+        agreementService.downloadFile(agreement, response, fileName);
     }
 
 }

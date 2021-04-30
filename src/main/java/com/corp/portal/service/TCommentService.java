@@ -31,8 +31,7 @@ public class TCommentService {
     private TaskCoFileService taskCoFileService;
 
     @Autowired
-    private ConfigRepo configRepo;
-
+    private TaskService taskService;
     public Task addComment(User user, Map<String, String> form, MultipartFile[] file) throws IOException {
         TComment comment = new TComment();
 
@@ -44,6 +43,7 @@ public class TCommentService {
         commentRepo.save(comment);
         List list = commentRepo.findByParentOrderByDatecreateAsc(task.getId());
         task.setComment(list);
+        taskService.setLastActive(task);
         TComment tCommentDb = commentRepo.findById(comment.getId()).get();
         if (!file[0].getOriginalFilename().isEmpty()){
             taskCoFileService.addFile(task.getPath(),file,user,tCommentDb);
@@ -53,9 +53,11 @@ public class TCommentService {
     }
 
     public List findAllByParent(Long task){
-        System.out.println("PCommentService.findAllByParent 1");
         List list = commentRepo.findByParentOrderByDatecreateAsc(task);
-        System.out.println("PCommentService.findAllByParent");
         return list;
+    }
+
+    public List<TComment> findAllCommentAg(Long task){
+        return commentRepo.findByParentOrderByDatecreateAsc(task);
     }
 }

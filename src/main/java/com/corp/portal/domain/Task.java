@@ -43,6 +43,26 @@ public class Task extends AbstractProject {
 
     private Long type;
 
+    private String goal;
+
+    private String agComment;
+
+    public String getAgComment() {
+        return agComment;
+    }
+
+    public void setAgComment(String agComment) {
+        this.agComment = agComment;
+    }
+
+    public String getGoal() {
+        return goal;
+    }
+
+    public void setGoal(String goal) {
+        this.goal = goal;
+    }
+
     public Long getType() {
         return type;
     }

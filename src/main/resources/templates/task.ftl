@@ -26,6 +26,7 @@
                                         <th>Ответственный</th>
                                         <th>Деадлайн</th>
                                         <th>Статус</th>
+                                        <th>Активность</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -37,6 +38,7 @@
                                             <td>${task.responsible.firstName} ${task.responsible.surname}</td>
                                             <td>${task.deadline}</td>
                                             <td>${task.status}</td>
+                                            <td>${(task.lastActive)!""}</td>
                                         </tr>
                                     </#list>
                                     </#if>

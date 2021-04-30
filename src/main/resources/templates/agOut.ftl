@@ -25,16 +25,18 @@
                                         <th>Дата начала</th>
                                         <th>Дедлайн</th>
                                         <th>Статус</th>
+                                        <th>Активность</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <#if agreements ??>
                                     <#list agreements as ag>
                                         <tr>
-                                            <td><a href="/agreement/out/${ag.id}"><b>${ag.name}</b></a></td>
+                                            <td><a href="/agreement/${ag.id}"><b>${ag.name}</b></a></td>
                                             <td>${ag.datecreate}</td>
                                             <td>${ag.deadline}</td>
                                             <td>${ag.status}</td>
+                                            <td>${(ag.lastActive)!""}</td>
                                         </tr>
                                     </#list>
                                     </#if>

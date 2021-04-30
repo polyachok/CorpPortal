@@ -26,6 +26,16 @@ public abstract class AbstractProject {
 
     private String path;
 
+    private String lastActive;
+
+    public String getLastActive() {
+        return lastActive;
+    }
+
+    public void setLastActive(String lastActive) {
+        this.lastActive = lastActive;
+    }
+
     public String getPath() {
         return path;
     }
