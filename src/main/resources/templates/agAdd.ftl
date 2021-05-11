@@ -13,8 +13,16 @@
                         <div class="card-body">
                             <form enctype="multipart/form-data" action="/agreement" method="post">
                                 <div class="form-group">
-                                    <label for="exampleInputName">Предмет согласования</label>
+                                    <label for="exampleInputName">Название</label>
                                     <input type="text" name="name" class="form-control" id="exampleInputName" placeholder="Название">
+                                </div>
+                                <div class="form-group">
+                                    <label>Предмет согласования</label>
+                                    <select name="type" id="type" class="select2bs4" style="width: 100%;">
+                                        <option value="0">-</option>
+                                        <option value="1">Договор</option>
+                                        
+                                    </select>
                                 </div>
                                 <div class="form-group">
                                     <label for="exampleInputName">Описание</label>
@@ -78,6 +86,37 @@
                     </div>
                 </div>
             </div>
+    <div class="modal" tabindex="-1" role="dialog" id="myModal1">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <form action="/task/update" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Новый договор</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="exampleInputName">Название согласования</label>
+                            <input type="text" name="name" class="form-control" id="exampleInputName" value="">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputName">Описание</label>
+                            <textarea class="form-control" name="agComment" value="Напишите комментарий к согласованию"></textarea>
+                        </div>
+
+                        <input type="hidden" name="_csrf" value="${_csrf.token}" />
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить</button>
+                        <button type="submit" class="btn btn-primary">Сохранить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     </section>
 </@c.page>
 <script type="text/javascript" src="../static/js/summernote.min.js"></script>
@@ -96,9 +135,8 @@
         $('.select2bs4').select2({
             theme: 'bootstrap4'
         });
-
-
     })
+    
     $(function () {
         $('#datetimepicker5').datetimepicker({
             locale: 'ru',
@@ -134,5 +172,9 @@
                 }
             });
         }
+    });
+    
+    $("#type").change(function () {
+        $('#myModal1').modal('show');
     });
 </script>

@@ -2,6 +2,7 @@ package com.corp.portal.service;
 
 import com.corp.portal.domain.*;
 import com.corp.portal.repos.AgreementRepo;
+import com.corp.portal.repos.ConfigRepo;
 import com.corp.portal.repos.RouteRepo;
 import com.corp.portal.repos.SequenceRepo;
 import com.itextpdf.kernel.font.PdfFont;
@@ -21,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -44,6 +46,8 @@ public class AgreementService {
     private UtilService utilService;
     @Autowired
     private MailService mailService;
+    @Autowired
+    private ConfigRepo configRepo;
 
     public void addRoute(Route route, Map<String, String> form){
         Route routeDb = routeRepo.findByName(route.getName());
@@ -163,13 +167,15 @@ public class AgreementService {
     }
 
     public String createPdfFile(Long id){
-        String f = "src/main/resources/static/font/HelveticaRegular/HelveticaRegular.ttf";
+        Config f = configRepo.findByParamname("font");
+        //InputStream f = Class.class.getResourceAsStream("font/HelveticaRegular/+");
+        //String f = "src/main/resources/font/HelveticaRegular/HelveticaRegular.ttf";
         Agreement agreement = agreementRepo.findById(id).get();
         String dest = agreement.getPath() + "/" + agreement.getName() + ".pdf";
         List<Task> taskList = taskService.getByAgreement(agreement);
 
            try{
-               PdfFont font = PdfFontFactory.createFont(f, "Cp1251");
+               PdfFont font = PdfFontFactory.createFont(f.getParam(), "Cp1251");
                PdfDocument pdf = new PdfDocument(new PdfWriter(dest));
                Document document = new Document(pdf);
 
