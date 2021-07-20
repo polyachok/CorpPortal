@@ -1,0 +1,12 @@
+alter table company add service varchar(254);
+alter table company add date_work varchar(32);
+alter table company add capital float8;
+alter table company add size integer;
+alter table company add driver integer;
+alter table company add balance varchar(32);
+alter table company add money int8;
+alter table company add assets varchar(254);
+alter table company add transport varchar(254);
+alter table company add tax_burden varchar(254);
+alter table company add tax_payment float8;
+alter table company add mass_address varchar(254);

@@ -1,9 +1,8 @@
 package com.corp.portal.controller;
 
 
-import com.corp.portal.domain.Agreement;
-import com.corp.portal.domain.Task;
-import com.corp.portal.domain.User;
+import com.corp.portal.domain.*;
+import com.corp.portal.service.AgCommentService;
 import com.corp.portal.service.AgreementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +25,9 @@ import java.util.Map;
 public class agreementController {
    @Autowired
    private AgreementService agreementService;
+
+   @Autowired
+   private AgCommentService commentService;
 
     @GetMapping("/outgoing")
     public String agOutList(Model model){
@@ -47,7 +50,14 @@ public class agreementController {
         model.addAttribute("route", agreementService.getRouteList());
         model.addAttribute("taskList", agreementService.findTask(user));
         model.addAttribute("userList", agreementService.findAllUser());
+        model.addAttribute("contractList", agreementService.findAllContractByAuthorAndStatus(user, 0));
         return "agAdd";
+    }
+
+    @PostMapping("update")
+    public String updateAgreement(Agreement agreement){
+        agreementService.updateAg(agreement);
+        return "redirect:/agreement/"+agreement.getId();
     }
 
     @PostMapping()
@@ -69,9 +79,12 @@ public class agreementController {
        model.addAttribute("routeList", agreementService.getRouteList());
        model.addAttribute("agAction", 0);
        model.addAttribute("agTask", agreementService.findByAgreement(agreement));
-       if (agreementService.getParentTask(agreement) != null) {
+       model.addAttribute("contract", agreementService.findContractById(agreement.getContract().getId()));
+       if (agreement.getParentT() != 0 ) {
            model.addAttribute("parent", agreementService.getParentTask(agreement));
        }
+
+       model.addAttribute("comments",commentService.findAllByParent(agreement.getId()));
         return "agInfo";
     }
 
@@ -103,5 +116,20 @@ public class agreementController {
         String fileName = agreementService.createPdfFile(Long.valueOf(agreement));
         agreementService.downloadFile(agreement, response, fileName);
     }
+
+    @PostMapping("comment")
+    public String addComment(@AuthenticationPrincipal User user,
+                             @RequestParam Map<String, String> form,
+                             @RequestParam("file") MultipartFile[] file,
+                             Model model) {
+        if (form.get("editordata").isEmpty()&& file[0].getOriginalFilename().isEmpty()) {
+            Agreement agreement = agreementService.findById(Long.parseLong(form.get("ag_id")));
+            return "redirect:/agreement/" + agreement.getId();
+        }else {
+            Agreement agreement = commentService.addComment(user, form, file);
+            return "redirect:/agreement/" + agreement.getId();
+        }
+    }
+
 
 }

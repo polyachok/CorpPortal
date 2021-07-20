@@ -20,6 +20,16 @@ public class Sequence {
 
     private Integer deadline;
 
+    private Integer type;
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
     public User getUsr() {
         return usr;
     }

@@ -4,6 +4,7 @@ import com.corp.portal.domain.*;
 import com.corp.portal.repos.TaskCoFileRepo;
 import com.corp.portal.repos.TaskRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
@@ -42,10 +43,15 @@ public class TaskService {
     @Autowired
     private UtilService utilService;
 
-    public void createTask(User user, Task task, Long type) throws ParseException {
+    @Autowired
+    private ContractService contractService;
+
+    public void createTask(User user, Task task, Long type){
         task.setAuthor(user);
         task.setType(type);
-        task.setDeadLineStatus(checkDeadline(task.getDeadline()));
+        task.setDatecreate(utilService.dateOfStr());
+        task.setDeadline(utilService.formateDateMMM(task.getDeadline()));
+        task.setDeadLineStatus(utilService.checkDeadline(task.getDeadline()));
         task.setStatus("Не принята");
         task.setParentA(Long.valueOf(0));
        // projectService.updateTeamProject(parentId(task), task.getResponsible(), (HashSet) task.getTeam());
@@ -64,41 +70,57 @@ public class TaskService {
 
     public void createAgTask(Agreement agreement, Route route, List<Sequence> sequences){
         int i = 0;
-        for (Sequence one: sequences){
-            Task agTask = new Task();
-            agTask.setName(agreement.getName() + " - Этап " + one.getNumber());
-            agTask.setDatecreate(agreement.getDatecreate());
 
-            agTask.setDescription(agreement.getDescription());
-            agTask.setAuthor(agreement.getAuthor());
-            agTask.setResponsible(one.getUser());
-            agTask.setParentA(agreement.getId());
-            agTask.setParentP(Long.valueOf(0));
-            agTask.setPath(fileService.createTaskPath(agTask, agreement.getPath()));
-            agTask.setType(Long.valueOf(1));
-            taskRepo.save(agTask);
-            if (one.getNumber() == 1){
-                agTask.setParentT(Long.valueOf(0));
-                agTask.setStatus("Согласовать");
-                setDeadline(agTask, one.getDeadline());
-                mailService.sendAgreementNextStage(agTask);
-            }else {
-                User responsible = sequences.get(i - 1).getUser();
-                agTask.setParentT(getAgTaskByAgreementAndResponsible(agreement,responsible).getId());
-                agTask.setStatus("Не активная");
-                agTask.setDeadline(String.valueOf(one.getDeadline()));
+            for (Sequence one : sequences) {
+                Task agTask = new Task();
+                agTask.setName(agreement.getName() + " - Этап " + one.getNumber());
+                agTask.setDatecreate(agreement.getDatecreate());
+                agTask.setDescription(agreement.getDescription());
+                agTask.setAuthor(agreement.getAuthor());
+                agTask.setResponsible(one.getUser());
+                agTask.setParentA(agreement.getId());
+                agTask.setParentP(Long.valueOf(0));
+                agTask.setPath(fileService.createTaskPath(agTask, agreement.getPath()));
+                agTask.setType(Long.valueOf(1));
+                taskRepo.save(agTask);
+                if (route.getType() == 0) {
+                    if (one.getNumber() == 1) {
+                        agTask.setParentT(Long.valueOf(0));
+                        agTask.setStatus("Согласовать");
+                        setDeadline(agTask, one.getDeadline());
+                        mailService.sendAgreementNextStage(agTask);
+                    } else {
+                        User responsible = sequences.get(i - 1).getUser();
+                        agTask.setParentT(getAgTaskByAgreementAndResponsible(agreement, responsible).getId());
+                        agTask.setStatus("Не активная");
+                        agTask.setDeadline(String.valueOf(one.getDeadline()));
+                    }
+                }else{
+                    if (one.getNumber() == 1 || one.getNumber() == 2) {
+                    agTask.setParentT(Long.valueOf(0));
+                    agTask.setStatus("Согласовать");
+                    setDeadline(agTask, one.getDeadline());
+                    mailService.sendAgreementNextStage(agTask);
+                }else {
+                        User responsible = sequences.get(i - 1).getUser();
+                        agTask.setParentT(getAgTaskByAgreementAndResponsible(agreement, responsible).getId());
+                        agTask.setStatus("Не активная");
+                        agTask.setDeadline(String.valueOf(one.getDeadline()));
+                    }
+                }
+
+                i++;
             }
-            i++;
-        }
+
     }
 
-    public List getAgTaskComment(Task agTask){
-        return taskRepo.findByParentAAndStatusNot(agTask.getParentA(), "Не активная");
+    public List<Task> getAgTaskComment(Task agTask){
+        return taskRepo.findByParentAAndStatusNotOrderByName(agTask.getParentA(), "Не активная");
     }
 
     public List getAllParentComment(Task agTask){
         List list = new ArrayList<>();
-        for (Task task : taskRepo.findByParentAAndStatusNot(agTask.getParentA(), "Не активная")){
+        for (Task task : taskRepo.findByParentAAndStatusNotOrderByName(agTask.getParentA(), "Не активная")){
             for (TComment comment : commentService.findAllCommentAg(task.getId())){
                 if (comment.getFile().size() != 0){
                     list.add(comment);
@@ -180,7 +202,7 @@ public class TaskService {
     public List findByAuthor(User author, Long type) throws ParseException {
         List<Task> taskList = taskRepo.findByAuthorAndType(author, type);
         for (Task task: taskList){
-            task.setDeadLineStatus(checkDeadline(task.getDeadline()));
+            task.setDeadLineStatus(utilService.checkDeadline(task.getDeadline()));
         }
         return taskList;
     }
@@ -195,7 +217,8 @@ public class TaskService {
     public List findBuTeamOrResponsible(User user,Long type){
         User team = user;
         User responsible = user;
-        return taskRepo.findByTeamOrResponsibleAndType(team, responsible, type);
+        List list = taskRepo.findByTeamOrResponsibleAndType(team, responsible, type);
+        return list;
     }
 
     public List findProjectByAuthorOrTeam(User user){
@@ -208,6 +231,12 @@ public class TaskService {
 
     public List findAgreementByAuthorOrResponsible(Task task, User user){
         return agreementService.findAgreement(task, user);
+    }
+
+    public List findByDeadline(Date date, List<String> status){
+        String deadline = utilService.dateToDDMMMYYYY(date);
+        List taskList = taskRepo.findByDeadlineAndStatusNotIn(deadline, status);
+        return taskList;
     }
 
     public void setTaskStatus(Task task, String action) {
@@ -233,9 +262,14 @@ public class TaskService {
         }
     }
 
-    public void setApprove(Long taskId, String text){
+    public void setApprove(Long taskId, String text, String action){
         Task task = taskRepo.findById(taskId).get();
-        task.setStatus("Согласовано");
+        if (action.equals("approve")){
+            task.setStatus("Согласовано");
+        }else {
+            task.setStatus("Не согласовано");
+        }
+
         taskApprove(task);
         setLastActive(task);
         task.setClosed(true);
@@ -261,24 +295,59 @@ public class TaskService {
 
     public void taskApprove(Task task){
         Task agTask = taskRepo.findByParentTAndParentA(task.getId(), task.getParentA());
-        if (agTask != null){
-            setDeadline(agTask, Integer.valueOf(agTask.getDeadline()));
-            agTask.setStatus("Согласовать");
-            mailService.sendAgreementNextStage(agTask);
-            mailService.sendAgreementStageAgreed(task);
-            taskRepo.save(agTask);
+        if (agTask != null && task.getParentT() != 0){
+            if (agTask.getStatus() != "Согласовать") {
+                setDeadline(agTask, Integer.valueOf(agTask.getDeadline()));
+                agTask.setStatus("Согласовать");
+                mailService.sendAgreementNextStage(agTask);
+                mailService.sendAgreementStageAgreed(task);
+                taskRepo.save(agTask);
+            }
             //todo сделать рассылку уведомлений на просрочку согласования
             //todo проверка дедлайна
         }else {
-            agreementService.setStatus(task.getParentA());
+            if (task.getParentT() != 0) {
+                agreementService.setStatus(task.getParentA());
+            }else{
+
+                Task agT = taskRepo.findByParentAAndParentTAndIdNot(agreementService.findById(task.getParentA()).getId(), Long.valueOf(0), task.getId());
+                if (agT == null){
+                    if (agTask.getStatus() != "Согласовать") {
+                        setDeadline(agTask, Integer.valueOf(agTask.getDeadline()));
+                        agTask.setStatus("Согласовать");
+                        mailService.sendAgreementNextStage(agTask);
+                        mailService.sendAgreementStageAgreed(task);
+                        taskRepo.save(agTask);
+                    }
+                }else {
+                    if (agT.getStatus().equals("Согласовано")) {
+                        if (agTask == null) {
+                            Task nextT = taskRepo.findByParentTAndParentA(agT.getId(), agT.getParentA());
+                            approve(nextT, task);
+                        } else {
+                            approve(agTask, task);
+                        }
+
+                    } else {
+                        mailService.sendAgreementStageAgreed(task);
+                    }
+                }
+
+            }
         }
 
     }
 
+    private void approve(Task agTask, Task approveTask){
+        setDeadline(agTask, Integer.valueOf(agTask.getDeadline()));
+        agTask.setStatus("Согласовать");
+        mailService.sendAgreementNextStage(agTask);
+        mailService.sendAgreementStageAgreed(approveTask);
+        taskRepo.save(agTask);
+    }
+
     public void setDeadline(Task agTask, Integer i){
-        Calendar calendar = GregorianCalendar.getInstance();
-        calendar.add(Calendar.DAY_OF_YEAR,i);
-        agTask.setDeadline(new SimpleDateFormat("dd MMM yyyy", new Locale("ru")).format( calendar.getTime()));
+        agTask.setDeadline(new SimpleDateFormat("dd MMM yyyy", new Locale("ru")).format(utilService.incrimentDate(i).getTime()));
     }
 
     public void updateTask(Task task) {
@@ -325,14 +394,6 @@ public class TaskService {
         return projectService.findByAuthorOrTeam(user);
     }
 
-    public boolean checkDeadline(String deadline) throws ParseException {
-        Date format = new SimpleDateFormat("dd.MM.yyyy").parse(deadline);
-        if (format.before(new Date())){
-            return true;
-        }else {
-            return false;
-        }
-    }
 
     public List<Task> checkAccessTask(List<Task> taskList, User user){
         List<Task> finalTaskList = new ArrayList<>();
@@ -365,5 +426,48 @@ public class TaskService {
     public void setagComment(String text, Long agTaskId) {
         Task agTaskDb = taskRepo.findById(agTaskId).get();
         agTaskDb.setAgComment(text);
+    }
+
+    public Contract getContract(Task agTask){
+        return agreementService.findById(agTask.getParentA()).getContract();
+    }
+
+    @Scheduled(cron = "0 3 8 * * *")
+    public void checkTaskDeadline(){
+       List<String> status = new ArrayList<>();
+        status.add("Согласовано");
+        status.add("Не активная");
+        status.add("Закрыта");
+        Date date = utilService.incrimentDate(1).getTime();
+        mailService.sendTaskDeadlineStatus(findByDeadline(date, status));
+    }
+
+
+    @Scheduled(cron = "0 10 8 * * *")
+    public void setDeadLineStatus(){
+        List<String> status = new ArrayList<>();
+        status.add("Согласовано");
+        status.add("Не активная");
+        status.add("Закрыта");
+       // List<Task> list = taskRepo.findByStatusNotInAndDeadLineStatus(status, false);
+        List<Task> list = taskRepo.findByStatusNotIn(status);
+
+            for (Task task: list){
+                    task.setDeadLineStatus(utilService.checkDeadline(task.getDeadline()));
+                    taskRepo.save(task);
+            }
+
+    }
+
+    @Scheduled(cron = "0 12 8 * * *")
+    public void reminderTaskDeadline(){
+        List<String> status = new ArrayList<>();
+        status.add("Согласовано");
+        status.add("Не активная");
+        status.add("Закрыта");
+        List<Task> list = taskRepo.findByDeadLineStatusAndStatusNotIn(true,status);
+        mailService.sendTaskReminderDeadline(list);
+
+
     }
 }

@@ -86,7 +86,6 @@ public class ProjectService {
         List<Project> projectListByTeam = projectRepo.findByTeam(user);
         List<Project> projectList = projectRepo.findByAuthor(user);
         projectList.addAll(projectListByTeam);
-        System.out.println("ProjectService.findByAuthorOrTeam");
         return projectList;
     }
 

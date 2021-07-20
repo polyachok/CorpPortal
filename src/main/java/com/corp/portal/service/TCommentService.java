@@ -32,6 +32,10 @@ public class TCommentService {
 
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private MailService mailService;
+
     public Task addComment(User user, Map<String, String> form, MultipartFile[] file) throws IOException {
         TComment comment = new TComment();
 
@@ -48,6 +52,7 @@ public class TCommentService {
         if (!file[0].getOriginalFilename().isEmpty()){
             taskCoFileService.addFile(task.getPath(),file,user,tCommentDb);
         }
+        mailService.sendNewCommentTask(task,comment.getAuthor());
         taskRepo.save(task);
         return task;
     }

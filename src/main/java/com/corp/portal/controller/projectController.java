@@ -104,7 +104,6 @@ private PCommentService commentService;
             }
             List userList = userService.findAll();
             model.addAttribute("userList",userList);
-            System.out.println("projectController.projectInfo");
         }
         model.addAttribute("team", project.getTeam());
         model.addAttribute("project", projectService.findById(project.getId()));

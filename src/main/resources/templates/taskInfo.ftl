@@ -1,3 +1,6 @@
+<#import "parts/macro/task.ftl" as taskMacro>
+<#import "parts/macro/comments.ftl" as commentsMacro>
+
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
@@ -42,7 +45,7 @@
                     <div class="col-md-9">
                         <div class="card card-success card-outline">
                             <div class="card-body box-profile">
-                                    <div class="post">
+                                <div class="post">
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <h4><strong>${task.name}</strong><#if user.id == task.author.id ><a class="btn" data-toggle="modal" data-target="#myModal" style="color: #666;"><i class="fas fa-edit"></i></a></#if></h4>
@@ -83,6 +86,7 @@
                                                             <#switch taskAction>
                                                                 <#case 9>
                                                                         <a class="btn btn-outline-success" href="" data-toggle="modal" data-target="#myModal2">Согласовать</a>
+                                                                        <a class="btn btn-outline-danger" href="" data-toggle="modal" data-target="#myModal3">Не согласовано</a>
                                                                     <#break>
                                                                 <#default>
                                                             </#switch>
@@ -92,13 +96,15 @@
                                             </div>
                                         </div>
                                     </div>
+                                <#if task.goal ??>
                                 <div class="post">
-                                <div class="row">
-                                    <div class="col-12 col-sm-12">
-                                        <h5>${(task.goal)!""}</h5>
+                                    <div class="row">
+                                        <div class="col-12 col-sm-12">
+                                            <h5>${(task.goal)!""}</h5>
+                                        </div>
                                     </div>
                                 </div>
-                                </div>
+                                </#if>
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="row">
@@ -182,75 +188,22 @@
 
                                                     </#if>
                                                 </#if>
+                                                <#if task.agComment ??>
+                                                    <@commentsMacro.atc/>
+                                                </#if>
                                                 <#if parentCommentList ??>
-                                                    <#list parentCommentList as t>
-                                                        <#if t.id != task.id>
-                                                            <div id="accordion">
-                                                                <div class="card card-success card-outline">
-                                                                    <a class="d-block w-100 collapsed" data-toggle="collapse" href="#collapse${t.id}">
-                                                                        <div class="card-header">
-                                                                            <h4 class="card-title w-100">
-                                                                                ${t.name} &ensp;&mdash;&ensp; ${t.status} &ensp; ${t.responsible.surname} ${t.responsible.firstName} &ensp; ${(t.dateclose)!""}
-                                                                            </h4>
-                                                                        </div>
-                                                                    </a>
-                                                                    <div id="collapse${t.id}" class="collapse" data-parent="#accordion">
-                                                                        <div class="card-body">
-                                                                            <#list t.comment as comment>
-                                                                            <div class="post" style="border-bottom: 1px solid #adb5bd;">
-                                                                                <div class="user-block">
-                                                                                    <img class="img-circle img-bordered-sm" src="../static/img/avatar.jpg" alt="user image">
-                                                                                    <span class="username"><a href="#">${comment.author.surname} ${comment.author.firstName}</a></span>
-                                                                                    <span class="description">${comment.datecreate}</span>
-                                                                                </div>
-                                                                                <!-- /.user-block -->
-                                                                                <div class="click2edit">
-                                                                                    ${comment.description}
-                                                                                </div>
-                                                                                <p>
-                                                                                    <#if comment.file??>
-                                                                                        <#list comment.file as file>
-                                                                                            <a href="/task/file/${file.name}?id=${file.id}" class="link-black text-sm"><i class="fas fa-link mr-1"></i> ${file.name}</a>
-                                                                                        </#list>
-                                                                                    </#if>
-                                                                                </p>
-                                                                            </div>
-                                                                            </#list>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </#if>
-                                                    </#list>
+                                                    <@taskMacro.pc/>
                                                 </#if>
                                                 <hr />
-                                                <h4>Комментарии к задаче</h4>
+                                                <#if agCommentsList ??>
+                                                    <@taskMacro.agc/>
+                                                </#if>
                                                 <#if comments ??>
-                                                <#list comments as comment>
-                                                <div class="post" style="border-bottom: 1px solid #adb5bd;">
-                                                    <div class="user-block">
-                                                        <img class="img-circle img-bordered-sm" src="../static/img/avatar.jpg" alt="user image">
-                                                        <span class="username">
-                                                          <a href="#">${comment.author.surname} ${comment.author.firstName}</a>
-                                                        </span>
-                                                        <span class="description">${comment.datecreate}</span>
-                                                    </div>
-                                                    <!-- /.user-block -->
-                                                    <div class="click2edit">
-                                                        ${comment.description}
-                                                    </div>
-                                                    <p>
-                                                        <#if comment.file??>
-                                                            <#list comment.file as file>
-                                                                <a href="/task/file/${file.name}?id=${file.id}" class="link-black text-sm"><i class="fas fa-link mr-1"></i> ${file.name}</a>
-                                                            </#list>
-                                                        </#if>
-                                                    </p>
-                                                </div>
-                                                </#list>
+                                                   <@taskMacro.tc/>
                                                 </#if>
                                             </div>
                                         </div>
+                                        <#if task.status != "Согласовано">
                                         <div class="row" style="margin-top: 20px;">
                                             <div class="col-md-12">
                                                 <h4>Написать комментарий</h4>
@@ -280,6 +233,7 @@
                                                 </form>
                                             </div>
                                         </div>
+                                        </#if>
                                     </div>
                                 </div>
                             </div>
@@ -348,10 +302,16 @@
                                         <#if type == "agTask">
                                             <#list files as file>
                                                 <div style="padding: 0.2rem;">
-                                                    <a href="/task/file/${file.name}?id=${file.id}&type=0" class="link-black text-sm"><i class="far fa-file"></i> ${file.name}</a>
+                                                    <a href="/task/file/${file.name}?id=${file.id}&type=1" class="link-black text-sm"><i class="far fa-file"></i> ${file.name}</a>
                                                     <p class="text-muted text-xs">${file.datecreate} &emsp; ${file.author.firstName} ${file.author.surname}</p>
                                                 </div>
                                             </#list>
+                                            <#if contract ??>
+                                                <#list contract.file as file>
+                                                    <a href="/contract/file/${file.name}?id=${file.id}&type=1" class="link-black text-sm"><i class="far fa-file"></i> ${file.name}</a>
+                                                    <p class="text-muted text-xs">${file.datecreate}&emsp; ${file.author.firstName} ${file.author.surname}</p>
+                                                </#list>
+                                            </#if>
                                         </#if>
                                     </dd>
                                 </dl>
@@ -361,143 +321,13 @@
                 </div>
             </div>
             <#if user.id == task.author.id>
-            <div class="modal" tabindex="-1" role="dialog" id="myModal">
-                <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <form action="/task/update" method="post">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Редактирование задачи</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="form-group">
-                                    <label for="exampleInputName">Название задачи</label>
-                                    <input type="text" name="name" class="form-control" id="exampleInputName" value="${task.name}">
-                                </div>
-                                <div class="form-group">
-                                    <label for="exampleInputName">Описание</label>
-                                    <textarea id="summernote1" name="description" value="">${task.description}</textarea>
-                                </div>
-                                <div class="form-group">
-                                    <label>Надпроект</label>
-                                    <select name="parent" class="select2bs4" style="width: 100%;">
-                                        <option value="0">-</option>
-                                        <#if projects ??>
-                                            <#list projects as project>
-                                                <#if task.parentP == project.id>
-                                                    <#assign selected="selected">
-                                                <#else>
-                                                    <#assign selected="">
-                                                </#if>
-                                                <option <#if selected == "selected">${selected}</#if> value="${project.id}">${project.name}</option>
-                                            </#list>
-                                        </#if>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Надзадача</label>
-                                    <select name="parentT" class="select2bs4" style="width: 100%;">
-                                        <option value="0">-</option>
-                                        <#if taskList ??>
-                                            <#list taskList as task>
-                                                <#if task.parentT == task.id>
-                                                    <#assign selected="selected">
-                                                <#else>
-                                                    <#assign selected="">
-                                                </#if>
-                                                <option <#if selected == "selected">${selected}</#if> value="${task.id}">${task.name} - ${task.author.firstName} ${task.author.surname}</option>
-                                            </#list>
-                                        </#if>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Ответственный</label>
-                                    <select name="responsible" class="select2bs4_1" style="width: 100%;">
-                                        <option value="0">-</option>
-                                        <#if userList ??>
-                                            <#list userList as usr>
-                                                <#if task.responsible.id == usr.id>
-                                                    <#assign selected1="selected">
-                                                <#else> <#assign selected1=" ">
-                                                </#if>
-                                                <#if usr.surname != "user">
-                                                    <option <#if selected1 == "selected">${selected1}</#if> value="${usr.id}">${usr.surname} ${usr.firstName}</option>
-                                                </#if>
-                                            </#list>
-                                        </#if>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Команда проекта</label>
-                                    <select name="team" class="select2bs4" multiple="multiple" style="width: 100%;">
-                                        <#list userList as usr>
-                                            <#if usr.surname != "user">
-                                                <#if task.team ??>
-                                                    <#list task.team as one>
-                                                        <#if one.id == usr.id>
-                                                            <#assign selected="selected">
-                                                        </#if>
-                                                    </#list>
-                                                </#if>
-                                                <option <#if selected??>${selected}</#if> value="${usr.id}">${usr.surname} ${usr.firstName}</option>
-                                            </#if>
-                                        </#list>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Дата начала</label>
-                                    <input type="text" name="datecreate" value="${task.datecreate}" class="form-control datetimepicker-input" id="datetimepicker1" data-toggle="datetimepicker" data-target="#datetimepicker5"/>
-                                </div>
-                                <div class="form-group">
-                                    <label>Дедлайн</label>
-                                    <input type="text" name="deadline" value="${task.deadline}" class="form-control datetimepicker-input" id="datetimepicker2" data-toggle="datetimepicker" data-target="#datetimepicker6"/>
-                                </div>
-                                <div class="form-group">
-                                    <label>Статус</label>
-                                    <select name="status" class="form-control">
-                                        <option >Активный</option>
-                                        <option >Архивный</option>
-                                    </select>
-                                </div>
-                                <input type="hidden" name="_csrf" value="${_csrf.token}" />
-                                <input type="hidden" name="id" value="${task.id}" />
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Save changes</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+               <@taskMacro.editTask/>
             </#if>
-            <div class="modal" tabindex="-1" role="dialog" id="myModal2">
-                <form action="/task/approve" method="POST">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Комментарий к согласованию</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <textarea class="form-control" name="agComment" value="Напишите комментарий к согласованию"></textarea>
-                            </div>
-                            <div class="modal-footer">
-                                <input type="hidden" name="_csrf" value="${_csrf.token}" />
-                                <input type="hidden" name="id" value="${task.id}" />
-                                <input type="hidden" name="action" value="approve" />
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                                <button type="submit" class="btn btn-primary">Сохранить</button>
-                            </div>
-                        </div>
-                    </div>
+            <#if task.type != 0>
+                <@taskMacro.tma1/>
+                <@taskMacro.tma2/>
+            </#if>
 
-                </form>
-            </div>
         </section>
     </div>
 </div>

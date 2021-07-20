@@ -1,3 +1,4 @@
+<#import "parts/macro/agreement.ftl" as agMacro>
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
@@ -199,7 +200,7 @@
                                                                 <input type="file" name="file" multiple id="js-file" >
                                                                <!-- <label class="custom-file-label" for="customFile">Выбрать файлы</label>-->
                                                                 <input type="hidden" name="_csrf" value="${_csrf.token}" />
-                                                                <input type="hidden" name="task_id" value="${agreement.id}" />
+                                                                <input type="hidden" name="ag_id" value="${agreement.id}" />
                                                             </div>
                                                         </div>
                                                         <div class="col-md-4">
@@ -304,6 +305,12 @@
                                             <a href="/task/file/${file.name}?id=${file.id}&type=1" class="link-black text-sm"><i class="far fa-file"></i> ${file.name}</a>
                                             <p class="text-muted text-xs">${file.datecreate}&emsp; ${file.author.firstName} ${file.author.surname}</p>
                                         </#list>
+                                        <#if contract ??>
+                                            <#list contract.file as file>
+                                                <a href="/contract/file/${file.name}?id=${file.id}&type=1" class="link-black text-sm"><i class="far fa-file"></i> ${file.name}</a>
+                                                <p class="text-muted text-xs">${file.datecreate}&emsp; ${file.author.firstName} ${file.author.surname}</p>
+                                            </#list>
+                                        </#if>
                                     </dd>
                                <!-- <div class="text-center">
                                     <h4 class="profile-username text-center">Файлы</h4>
@@ -321,52 +328,7 @@
                 </div>
             </div>
             <#if user.id == agreement.author.id>
-            <div class="modal" tabindex="-1" role="dialog" id="myModal">
-                <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <form action="/task/update" method="post">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Редактирование согласования</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="form-group">
-                                    <label for="exampleInputName">Название согласования</label>
-                                    <input type="text" name="name" class="form-control" id="exampleInputName" value="${agreement.name}">
-                                </div>
-                                <div class="form-group">
-                                    <label for="exampleInputName">Описание</label>
-                                    <textarea id="summernote1" name="description" value="">${(agreement.description)!""}</textarea>
-                                </div>
-                                <div class="form-group">
-                                    <label>Маршрут</label>
-                                    <select name="team" class="select2bs4" multiple="multiple" style="width: 100%;">
-
-                                        <#list routeList as route>
-                                            <#if route.id == agreement.route.id>
-                                                <#assign selected="selected">
-                                            </#if>
-                                        </#list>
-                                        <option <#if selected??>${selected}</#if> value="${agreement.route.id}">${agreement.route.name} </option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Дедлайн</label>
-                                    <input type="text" name="deadline" value="${agreement.deadline}" class="form-control datetimepicker-input" id="datetimepicker2" data-toggle="datetimepicker" data-target="#datetimepicker6"/>
-                                </div>
-                                <input type="hidden" name="_csrf" value="${_csrf.token}" />
-                                <input type="hidden" name="id" value="${agreement.id}" />
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Save changes</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+                <@agMacro.editAgreement/>
             </#if>
         </section>
     </div>

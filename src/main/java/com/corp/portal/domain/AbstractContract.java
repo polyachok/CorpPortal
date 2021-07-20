@@ -1,6 +1,7 @@
 package com.corp.portal.domain;
 
 import javax.persistence.*;
+import java.util.List;
 
 @MappedSuperclass
 public abstract class AbstractContract {
@@ -15,7 +16,15 @@ public abstract class AbstractContract {
 
     private String number;
 
+    private String date_create;
+
+    private int status;
+
     private String date;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "author")
+    private User author;
 
     private String date_start;
 
@@ -28,6 +37,51 @@ public abstract class AbstractContract {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "company2")
     private Company company2;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "contract")
+    private List<ContractFile> file;
+
+    private String path;
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
+    }
+
+    public String getDate_create() {
+        return date_create;
+    }
+
+    public void setDate_create(String date_create) {
+        this.date_create = date_create;
+    }
+
+    public List<ContractFile> getFile() {
+        return file;
+    }
+
+    public void setFile(List<ContractFile> file) {
+        this.file = file;
+    }
 
     public String getNumber() {
         return number;

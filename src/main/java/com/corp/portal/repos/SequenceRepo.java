@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface SequenceRepo extends CrudRepository<Sequence, Long> {
 
-    List findByRoute(Route route);
+    List findByRouteOrderByNumber(Route route);
 
 
 

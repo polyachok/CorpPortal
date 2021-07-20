@@ -15,6 +15,16 @@ public class Route {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "route")
     private List<Sequence> sequence;
 
+    private Integer type;
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
     public Long getId() {
         return id;
     }

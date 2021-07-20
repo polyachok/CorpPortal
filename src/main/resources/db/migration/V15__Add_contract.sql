@@ -9,6 +9,9 @@ create table contract (
                         company1 int8,
                         company2 int8,
                         type integer,
+                        author int8 not null,
+                        date_create varchar(32),
+                        status integer default 1,
                         primary key (id)
 );
 

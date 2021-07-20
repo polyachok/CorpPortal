@@ -2,6 +2,7 @@ package com.corp.portal.controller;
 
 import com.corp.portal.domain.Role;
 import com.corp.portal.domain.User;
+import com.corp.portal.service.MailService;
 import com.corp.portal.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,6 +25,8 @@ public class userController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private MailService mailService;
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
@@ -128,6 +131,7 @@ public class userController {
         }
         if (userService.updateProfile(usr,form)) {
             model.addAttribute("usr", usr);
+            mailService.sendNewUserMessage(usr);
             return "redirect:/user";
         }
         return userList(model);

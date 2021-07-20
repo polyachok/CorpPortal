@@ -49,9 +49,7 @@ public class PCommentService {
     }
 
     public List findAllByParent(Long project){
-        System.out.println("PCommentService.findAllByParent 1");
         List list = pCommentRepo.findByParentOrderByDatecreateAsc(project);
-        System.out.println("PCommentService.findAllByParent");
         return list;
     }
 }

@@ -22,7 +22,7 @@
                                     <tr style="font: status-bar;">
                                         <th>Название</th>
                                         <th>Дата начала</th>
-                                        <th>Дедлайн</th>
+                                        <th>Срок согласования</th>
                                         <th>Статус</th>
                                         <th>Активность</th>
                                     </tr>
@@ -30,8 +30,8 @@
                                     <tbody>
                                     <#if agreements ??>
                                     <#list agreements as ag>
-                                        <tr>
-                                            <td><a href="/task/${ag.id}"><b>${ag.name}</b></a></td>
+                                        <tr <#if ag.deadLineStatus == true>style="color:#f90606; font-weight: bold;"</#if>>
+                                            <td <#if ag.deadLineStatus == true>style="color:#f90606; font-weight: bold;"</#if>><a href="/task/${ag.id}"><b>${ag.name}</b></a></td>
                                             <td>${ag.datecreate}</td>
                                             <td>${ag.deadline}</td>
                                             <td>${ag.status}</td>

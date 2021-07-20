@@ -1,9 +1,6 @@
 package com.corp.portal.service;
 
-import com.corp.portal.domain.Agreement;
-import com.corp.portal.domain.Config;
-import com.corp.portal.domain.Project;
-import com.corp.portal.domain.Task;
+import com.corp.portal.domain.*;
 import com.corp.portal.repos.ConfigRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +21,9 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 public class FileService {
     @Autowired
     private ConfigRepo configRepo;
+
+    @Autowired
+    private UtilService utilService;
 
     public String createProjectPath(Project project, String parentPath){
         String generateName = generatePath(parentPath, project.getName(), project.getDatecreate());
@@ -68,6 +68,38 @@ public class FileService {
     public String createAgPath(Agreement agreement){
         String parentPath = "";
         String generateName = generatePath(parentPath, agreement.getName(), agreement.getDatecreate());
+        File dir = new File(generateName);
+        if (!createPath(dir)){
+
+        }
+        return generateName;
+    }
+
+    public String updateAgPath(Agreement agreement, String parentPath){
+        String newName = generatePath(parentPath, agreement.getName(), agreement.getDatecreate());
+        Path newPath = Paths.get(newName);
+        Path oldDir = Paths.get(agreement.getPath());
+        try {
+            Files.move(oldDir,newPath, REPLACE_EXISTING);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        return newName;
+    }
+
+    public String createCompanyPath(Company company){
+        String parentPath = "";
+        String generateName = generatePath(parentPath, company.getName(), utilService.dateOfStr() );
+        File dir = new File(generateName);
+        if (!createPath(dir)){
+
+        }
+        return generateName;
+    }
+
+    public String createContractPath(Contract contract){
+        String parentPath = contract.getCompany1().getPath();
+        String generateName = generatePath(parentPath, contract.getName(), contract.getDate_create());
         File dir = new File(generateName);
         if (!createPath(dir)){
 

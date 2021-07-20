@@ -31,8 +31,8 @@
                                     <tbody>
                                     <#if agreements ??>
                                     <#list agreements as ag>
-                                        <tr>
-                                            <td><a href="/agreement/${ag.id}"><b>${ag.name}</b></a></td>
+                                        <tr <#if ag.deadLineStatus == true>style="color:#f90606; font-weight: bold;"</#if>>
+                                            <td><a href="/agreement/${ag.id}" <#if ag.deadLineStatus == true>style="color:#f90606; font-weight: bold;"</#if>><b>${ag.name}</b></a></td>
                                             <td>${ag.datecreate}</td>
                                             <td>${ag.deadline}</td>
                                             <td>${ag.status}</td>

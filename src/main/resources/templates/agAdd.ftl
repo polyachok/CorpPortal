@@ -18,10 +18,20 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Предмет согласования</label>
-                                    <select name="type" id="type" class="select2bs4" style="width: 100%;">
+                                    <select name="contract" id="type" class="select2bs4" style="width: 100%;">
                                         <option value="0">-</option>
-                                        <option value="1">Договор</option>
-                                        
+                                        <#if contractList ??>
+                                            <#list contractList as contract>
+                                                <option value="${contract.id}">${contract.name}</option>
+                                            </#list>
+                                        </#if>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Тип</label>
+                                    <select name="type"  class="select2bs4" style="width: 100%;">
+                                        <option value="0">Новый договор</option>
+                                        <option value="1">Продление договора</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
@@ -45,7 +55,7 @@
                                         <option value="0">-</option>
                                         <#if route ??>
                                             <#list route as one>
-                                                <option value="${one.id}">${one.name}</option>
+                                                <option value="${one.id}"><#switch one.type><#case 0>Новый<#break><#case 1>Продление<#break></#switch> ${one.name}</option>
                                             </#list>
                                         </#if>
                                     </select>
@@ -174,7 +184,7 @@
         }
     });
     
-    $("#type").change(function () {
+    /*$("#type").change(function () {
         $('#myModal1').modal('show');
-    });
+    });*/
 </script>

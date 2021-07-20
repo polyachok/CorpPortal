@@ -1,6 +1,7 @@
 package com.corp.portal.controller;
 
 import com.corp.portal.domain.*;
+import com.corp.portal.service.AgCommentService;
 import com.corp.portal.service.TCommentService;
 import com.corp.portal.service.TaskService;
 import com.corp.portal.service.UserService;
@@ -33,6 +34,8 @@ public class taskController {
     private UserService userService;
     @Autowired
     private TCommentService commentService;
+    @Autowired
+    private AgCommentService agCommentService;
 
     @GetMapping("/outgoing")
     public String taskOutList(Model model) throws ParseException {
@@ -110,11 +113,18 @@ public class taskController {
         }else {
             model.addAttribute("type", "agTask");
             model.addAttribute("files", taskService.getAgListFile(task));
-            if (task.getParentT() != 0){
-                model.addAttribute("parentFileList", taskService.getAgTaskFile(task));
-                model.addAttribute("parentCommentList", taskService.getAgTaskComment(task));
-                model.addAttribute("parentAgTask",taskService.findById(task.getParentT()));
-            }
+            model.addAttribute("contract",taskService.getContract(task));
+            model.addAttribute("agCommentsList", agCommentService.findAllByParent(task.getParentA()));
+           // if (task.getParentT() != 0){
+            model.addAttribute("parentFileList", taskService.getAgTaskFile(task));
+            model.addAttribute("parentCommentList", taskService.getAgTaskComment(task));
+               // model.addAttribute("parentAgTask",taskService.findById(task.getParentT()));
+               // for (Task task1: taskService.getAgTaskComment(task)){
+              //      System.out.println("taskController.taskInfo - " + task1.getId());
+              //  }
+
+           // }
+
         }
         if (task.getType() != 1){
             if (task.getParentT() != 0) {
@@ -127,6 +137,7 @@ public class taskController {
         }
         model.addAttribute("taskList", taskService.findByAuthorOrTeamOrResponsible(user));
         model.addAttribute("taskAction", taskService.getTaskAction(task, user));
+        //todo заблокировать задачу на редактирование после согласования
         return "taskInfo";
     }
 
@@ -138,7 +149,7 @@ public class taskController {
 
     @PostMapping("approve")
     public String approve(@RequestParam Map<String,String> form){
-        taskService.setApprove(Long.valueOf(form.get("id")), form.get("agComment"));
+        taskService.setApprove(Long.valueOf(form.get("id")), form.get("agComment"), form.get("action"));
         return "redirect:/agreement/incoming";
     }
 
